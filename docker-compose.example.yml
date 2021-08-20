@@ -1,0 +1,58 @@
+version: "3.7"
+services:
+  go:
+    restart: always
+    ports:
+      - "6000:6000"
+    container_name: cosmoscan-api
+    build: .
+    volumes:
+      - ./:/cosmoscan-api
+      - ~/.ssh:/root/.ssh
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+    deploy:
+      resources:
+        limits:
+          memory: 5000M
+        reservations:
+          memory: 2000M
+
+  clickhouse:
+    restart: always
+    ports:
+      - "9000:9000"
+      - "8123:8123"
+    container_name: cosmoscan-clickhouse
+    image: yandex/clickhouse-server:19.14.3.3
+    volumes:
+      - ./docker/clickhouse-users.xml:/etc/clickhouse-server/users.xml
+      - ./clickhouse:/var/lib/clickhouse
+    deploy:
+      resources:
+        limits:
+          memory: 10000M
+        reservations:
+          memory: 2000M
+  mysql:
+    restart: always
+    ports:
+      - "3306:3306"
+    container_name: cosmoscan-mysql
+    image: mysql:8
+    volumes:
+      - ./mysql:/var/lib/mysql
+    env_file:
+      - ./docker/.env:./.env
+    environment:
+      MYSQL_DATABASE: "${DB_NAME}"
+      MYSQL_USER: "${DB_USER}"
+      MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
+    deploy:
+      resources:
+        limits:
+          memory: 5000M
+        reservations:
+          memory: 2000M

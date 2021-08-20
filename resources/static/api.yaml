@@ -1,0 +1,1049 @@
+openapi: 3.0.1
+info:
+  title: "Cosmoscan API"
+  description: 'Global errors: <ul><li>{"error" : "bad_request", "msg": ""} - invalid request from client (Status code:400) </li><li> {"error" : "service_error"} - error on the service side (Status code:500)</li></ul>'
+  version: 1.0.0
+tags:
+  - name: Services
+paths:
+  /meta:
+    get:
+      tags:
+        - Services
+      summary: Meta information
+      responses:
+        200:
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                  latest_validator:
+                    type: string
+                  latest_proposal:
+                    type: string
+                  validator_avg_fee:
+                    type: number
+                  block_time:
+                    type: number
+                  current_price:
+                    type: number
+                example:
+                  height: 500
+                  latest_validator: "Everstake"
+                  latest_proposal: "Free transactions"
+                  validator_avg_fee: "10"
+                  block_time: 6.7
+                  current_price: "3.2"
+  /historical-state:
+    get:
+      tags:
+        - Services
+      summary: Get historical state
+      responses:
+        200:
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  current:
+                    type: object
+                    properties:
+                      price:
+                        type: number
+                      market_cap:
+                        type: number
+                      circulating_supply:
+                        type: number
+                      trading_volume:
+                        type: number
+                      staked_ratio:
+                        type: number
+                      transactions_count:
+                        type: number
+                      community_pool:
+                        type: number
+                      top20_weight:
+                        type: number
+                      created_at:
+                        type: number
+                  price_agg:
+                    $ref: '#/components/schemas/agg_item'
+                  market_cap_agg:
+                    $ref: '#/components/schemas/agg_item'
+                  staked_ratio:
+                    $ref: '#/components/schemas/agg_item'
+  /transactions/fee/agg:
+    get:
+      tags:
+        - Services
+      parameters:
+        - name: by
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [hour, day, week, month]
+        - name: from
+          in: query
+          required: false
+          schema:
+            type: number
+          description: timestamp in seconds
+        - name: to
+          in: query
+          required: false
+          schema:
+            type: number
+          description: timestamp in seconds
+      summary: Get aggregeted fee
+      responses:
+        200:
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/agg_item'
+  /transfers/volume/agg:
+    get:
+      tags:
+        - Services
+      parameters:
+        - name: by
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [hour, day, week, month]
+        - name: from
+          in: query
+          required: false
+          schema:
+            type: number
+          description: timestamp in seconds
+        - name: to
+          in: query
+          required: false
+          schema:
+            type: number
+          description: timestamp in seconds
+      summary: Get aggregeted transfers volume
+      responses:
+        200:
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/agg_item'
+  /operations/count/agg:
+    get:
+      tags:
+        - Services
+      parameters:
+        - name: by
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [hour, day, week, month]
+        - name: from
+          in: query
+          required: false
+          schema:
+            type: number
+          description: timestamp in seconds
+        - name: to
+          in: query
+          required: false
+          schema:
+            type: number
+          description: timestamp in seconds
+      summary: Get aggregeted count of operations
+      responses:
+        200:
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/agg_item'
+  /blocks/count/agg:
+    get:
+      tags:
+        - Services
+      parameters:
+        - name: by
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [hour, day, week, month]
+        - name: from
+          in: query
+          required: false
+          schema:
+            type: number
+          description: timestamp in seconds
+        - name: to
+          in: query
+          required: false
+          schema:
+            type: number
+          description: timestamp in seconds
+      summary: Get aggregeted count of blocks
+      responses:
+        200:
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/agg_item'
+  /blocks/delay/agg:
+    get:
+      tags:
+        - Services
+      parameters:
+        - name: by
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [hour, day, week, month]
+        - name: from
+          in: query
+          required: false
+          schema:
+            type: number
+          description: timestamp in seconds
+        - name: to
+          in: query
+          required: false
+          schema:
+            type: number
+          description: timestamp in seconds
+      summary: Get aggregeted average block delay
+      responses:
+        200:
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/agg_item'
+  /blocks/validators/uniq/agg:
+    get:
+      tags:
+        - Services
+      parameters:
+        - name: by
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [hour, day, week, month]
+        - name: from
+          in: query
+          required: false
+          schema:
+            type: number
+          description: timestamp in seconds
+        - name: to
+          in: query
+          required: false
+          schema:
+            type: number
+          description: timestamp in seconds
+      summary: Get aggregeted number of unique validators that signed the blocks
+      responses:
+        200:
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/agg_item'
+  /blocks/operations/agg:
+    get:
+      tags:
+        - Services
+      parameters:
+        - name: by
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [hour, day, week, month]
+        - name: from
+          in: query
+          required: false
+          schema:
+            type: number
+          description: timestamp in seconds
+        - name: to
+          in: query
+          required: false
+          schema:
+            type: number
+          description: timestamp in seconds
+      summary: Get avg number of operations per block by period
+      responses:
+        200:
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/agg_item'
+  /delegations/volume/agg:
+    get:
+      tags:
+        - Services
+      parameters:
+        - name: by
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [hour, day, week, month]
+        - name: from
+          in: query
+          required: false
+          schema:
+            type: number
+          description: timestamp in seconds
+        - name: to
+          in: query
+          required: false
+          schema:
+            type: number
+          description: timestamp in seconds
+      responses:
+        200:
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/agg_item'
+  /undelegations/volume/agg:
+    get:
+      tags:
+        - Services
+      parameters:
+        - name: by
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [hour, day, week, month]
+        - name: from
+          in: query
+          required: false
+          schema:
+            type: number
+          description: timestamp in seconds
+        - name: to
+          in: query
+          required: false
+          schema:
+            type: number
+          description: timestamp in seconds
+      summary: Get aggregeted undelegations volume
+      responses:
+        200:
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/agg_item'
+  /unbonding/volume/agg:
+    get:
+      tags:
+        - Services
+      parameters:
+        - name: by
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [hour, day, week, month]
+        - name: from
+          in: query
+          required: false
+          schema:
+            type: number
+          description: timestamp in seconds
+        - name: to
+          in: query
+          required: false
+          schema:
+            type: number
+          description: timestamp in seconds
+      summary: Get aggregeted unbonding volume
+      responses:
+        200:
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/agg_item'
+  /bonded-ratio/agg:
+    get:
+      tags:
+        - Services
+      parameters:
+        - name: by
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [hour, day, week, month]
+        - name: from
+          in: query
+          required: false
+          schema:
+            type: number
+          description: timestamp in seconds
+        - name: to
+          in: query
+          required: false
+          schema:
+            type: number
+          description: timestamp in seconds
+      summary: Get aggregeted bonded ratio
+      responses:
+        200:
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/agg_item'
+  /network/stats:
+    get:
+      tags:
+        - Services
+      parameters:
+        - name: to
+          in: query
+          required: false
+          schema:
+            type: number
+          description: timestamp in seconds
+      summary: Get network stats
+      responses:
+        200:
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_staking_balance:
+                    type: array
+                    items:
+                      type: number
+                  number_delegators:
+                    type: array
+                    items:
+                      type: number
+                  number_multi_delegators:
+                    type: array
+                    items:
+                      type: number
+                  transfer_volume:
+                    type: array
+                    items:
+                      type: number
+                  fee_volume:
+                    type: array
+                    items:
+                      type: number
+                  highest_fee:
+                    type: array
+                    items:
+                      type: number
+                  undelegation_volume:
+                    type: array
+                    items:
+                      type: number
+                  block_delay:
+                    type: array
+                    items:
+                      type: number
+                  total_accounts:
+                    type: array
+                    items:
+                      type: number
+                  total_whale_accounts:
+                    type: array
+                    items:
+                      type: number
+                  total_small_accounts:
+                    type: array
+                    items:
+                      type: number
+                  total_jailers:
+                    type: array
+                    items:
+                      type: number
+  /staking/pie:
+    get:
+      tags:
+        - Services
+      summary: Get top 20 staking shares
+      responses:
+        200:
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: number
+                  parts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        title:
+                          type: string
+                        label:
+                          type: string
+                        value:
+                          type: number
+                example: {total: 4321, parts: [{title: everstake, value: 123}]}
+  /proposals:
+    get:
+      tags:
+        - Services
+      parameters:
+        - name: id
+          in: query
+          required: false
+          schema:
+            type: number
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: number
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: number
+      summary: Get proposals
+      responses:
+        200:
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: number
+                    proposer:
+                      type: string
+                    tx_hash:
+                      type: string
+                    title:
+                      type: string
+                    description:
+                      type: string
+                    status:
+                      type: string
+                    votes_yes:
+                      type: number
+                    votes_abstain:
+                      type: number
+                    votes_no:
+                      type: number
+                    votes_no_with_veto:
+                      type: number
+                    submit_time:
+                      type: number
+                    deposit_end_time:
+                      type: number
+                    total_deposits:
+                      type: number
+                    voting_start_time:
+                      type: number
+                    voting_end_time:
+                      type: number
+                    voters:
+                      type: number
+                    participation_rate:
+                      type: number
+                    turnout:
+                      type: number
+                    activity:
+                      $ref: '#/components/schemas/agg_item'
+  /proposals/votes:
+    get:
+      tags:
+        - Services
+      parameters:
+        - name: proposal_id
+          in: query
+          required: false
+          schema:
+            type: number
+        - name: voters
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: number
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: number
+      summary: Get proposal votes
+      responses:
+        200:
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    proposal_id:
+                      type: number
+                    voter:
+                      type: string
+                    tx_hash:
+                      type: string
+                    option:
+                      type: string
+                    created_at:
+                      type: number
+                    is_validator:
+                      type: boolean
+                    title:
+                      type: string
+  /proposals/deposits:
+    get:
+      tags:
+        - Services
+      parameters:
+        - name: proposal_id
+          in: query
+          required: false
+          schema:
+            type: number
+      summary: Get proposal deposits
+      responses:
+        200:
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    proposal_id:
+                      type: number
+                    depositor:
+                      type: string
+                    amount:
+                      type: number
+                    created_at:
+                      type: number
+  /proposals/chart:
+    get:
+      tags:
+        - Services
+      summary: Get proposals chart data
+      responses:
+        200:
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    proposal_id:
+                      type: number
+                    voters_total:
+                      type: number
+                    validators_total:
+                      type: number
+                    turnout:
+                      type: number
+                    yes_percent:
+                      type: number
+                    no_percent:
+                      type: number
+                    no_with_veto_percent:
+                      type: number
+                    abstain_percent:
+                      type: number
+  /validators/33power/agg:
+    get:
+      tags:
+        - Services
+      parameters:
+        - name: by
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [hour, day, week, month]
+        - name: from
+          in: query
+          required: false
+          schema:
+            type: number
+          description: timestamp in seconds
+        - name: to
+          in: query
+          required: false
+          schema:
+            type: number
+          description: timestamp in seconds
+      summary: Get count of validators which have more than 33.4% power
+      responses:
+        200:
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/agg_item'
+  /accounts/whale/agg:
+    get:
+      tags:
+        - Services
+      parameters:
+        - name: by
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [hour, day, week, month]
+        - name: from
+          in: query
+          required: false
+          schema:
+            type: number
+          description: timestamp in seconds
+        - name: to
+          in: query
+          required: false
+          schema:
+            type: number
+          description: timestamp in seconds
+      summary: Get aggregetd whale accounts
+      responses:
+        200:
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/agg_item'
+  /validators:
+    get:
+      tags:
+        - Services
+      summary: Get validators info
+      responses:
+        200:
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    title:
+                      type: string
+                    power:
+                      type: number
+                    self_stake:
+                      type: number
+                    fee:
+                      type: number
+                    blocks_proposed:
+                      type: number
+                    delegators:
+                      type: number
+                    power_24_change:
+                      type: number
+                    governance_votes:
+                      type: number
+  /validators/delegators/total:
+    get:
+      tags:
+        - Services
+      summary: Get validators delegators
+      responses:
+        200:
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/validator_item'
+  /validators/top/jailed:
+    get:
+      tags:
+        - Services
+      summary: Get most jailed validators
+      responses:
+        200:
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/validator_item'
+  /validators/top/proposed:
+    get:
+      tags:
+        - Services
+      summary: Get validators with max count of proposed blocks
+      responses:
+        200:
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/validator_item'
+  /validators/fee/ranges:
+    get:
+      tags:
+        - Services
+      summary: Get validators fee range
+      responses:
+        200:
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  from:
+                    type: number
+                  to:
+                    type: number
+                  validators:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        validator:
+                          type: string
+                        fee:
+                          type: number
+  /validator/{address}:
+    get:
+      parameters:
+        - in: path
+          name: address
+          required: true
+          schema:
+            type: string
+      tags:
+        - Services
+      summary: Get validator info
+      responses:
+        200:
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  title:
+                    type: string
+                  website:
+                    type: string
+                  operator_address:
+                    type: string
+                  acc_address:
+                    type: string
+                  cons_address:
+                    type: string
+                  percent_power:
+                    type: number
+                  power:
+                    type: number
+                  self_stake:
+                    type: number
+                  fee:
+                    type: number
+                  blocks_proposed:
+                    type: number
+                  delegators:
+                    type: number
+                  power_24_change:
+                    type: number
+                  governance_votes:
+                    type: number
+  /validator/{address}/balance:
+    get:
+      parameters:
+        - in: path
+          name: address
+          required: true
+          schema:
+            type: string
+      tags:
+        - Services
+      summary: Get validator balance
+      responses:
+        200:
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  self_delegated:
+                    type: number
+                  other_delegated:
+                    type: number
+                  available:
+                    type: number
+  /validator/{address}/delegations/agg:
+    get:
+      parameters:
+        - in: path
+          name: address
+          required: true
+          schema:
+            type: string
+      tags:
+        - Services
+      summary: Get aggregeted validator delegations
+      responses:
+        200:
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/agg_item'
+  /validator/{address}/delegators/agg:
+    get:
+      parameters:
+        - in: path
+          name: address
+          required: true
+          schema:
+            type: string
+      tags:
+        - Services
+      summary: Get aggregeted validator delegators
+      responses:
+        200:
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/agg_item'
+  /validator/{address}/blocks/stats:
+    get:
+      parameters:
+        - in: path
+          name: address
+          required: true
+          schema:
+            type: string
+      tags:
+        - Services
+      summary: Get validator block stats
+      responses:
+        200:
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  proposed:
+                    type: number
+                  missed_validations:
+                    type: number
+                  revenue:
+                    type: number
+  /validator/{address}/delegators:
+    get:
+      parameters:
+        - in: path
+          name: address
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: number
+            maximum: 20
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: number
+      tags:
+        - Services
+      summary: Get list of validator delegators
+      responses:
+        200:
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        delegator:
+                          type: string
+                        amount:
+                          type: number
+                        since:
+                          type: number
+                        delta:
+                          type: number
+                  total:
+                    type: number
+components:
+  schemas:
+    agg_item:
+      type: array
+      items:
+        type: object
+        properties:
+          time:
+            type: number
+          value:
+            type: number
+      example:
+        [{time: 1591258057, value: "32.32"}, {time: 1591258052, value: "5"}]
+    validator_item:
+      type: array
+      items:
+        type: object
+        properties:
+          validator:
+            type: string
+          value:
+            type: number
+      example:
+        [{validator: "validator1", value: 2}, {validator: "validator2", value: 32}]
