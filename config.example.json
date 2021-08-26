@@ -2,7 +2,7 @@
   "api": {
     "port": "5001",
     "allowed_hosts": [
-       "http://206.189.232.27:5001"
+       "http://167.99.112.164:5001"
     ]
   },
   "mysql": {
@@ -21,7 +21,7 @@
     "database": "cosmoshub3"
   },
   "parser": {
-    "node": "http://104.131.46.133:1317",
+    "node": "http://142.93.65.220:1317",
     "batch": 500,
     "fetchers": 5
   },
