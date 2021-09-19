@@ -6,7 +6,8 @@
 Website: https://chadscan.com
 Frontend repo: https://github.com/everstake/cosmoscan-front
 
-Cosmoscan is the first data and statistics explorer for the Cosmos network. It provides information oт the overall network operations, governance details, validators and much more. This is still an MVP, so if you have any suggestions, please reach out.
+Chadscan is the first block explorer for the IDEP network. It provides information oт the overall network operations, governance details, validators and much more.
+The backend is currently a fork from cosmoscan.
 
 Dependency:
  - Clickhouse
