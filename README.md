@@ -1,6 +1,9 @@
-# Cosmoscan API (backend)
+<h1><p align="center"><img alt="Banner" src="chadscan_banner.png" /></p></h1>
 
-Website: https://cosmoscan.net
+
+# Chadscan Backend
+
+Website: https://chadscan.com
 Frontend repo: https://github.com/everstake/cosmoscan-front
 
 Cosmoscan is the first data and statistics explorer for the Cosmos network. It provides information oт the overall network operations, governance details, validators and much more. This is still an MVP, so if you have any suggestions, please reach out.
