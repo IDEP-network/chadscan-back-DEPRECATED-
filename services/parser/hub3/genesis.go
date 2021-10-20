@@ -127,7 +127,8 @@ func (p *Parser) parseGenesisState() error {
 		accountDelegation[delegation.Delegator] = accountDelegation[delegation.Delegator].Add(delegation.Amount)
 	}
 	for _, account := range state.AppState.Accounts {
-		amount, _ := calculateXprtAmount(account.BaseVestingAccount.BaseAccount.Coins)
+		//amount, _ := calculateXprtAmount(account.BaseVestingAccount.BaseAccount.Coins)
+		amount, _ := calculateIdepAmount(account.BaseVestingAccount.BaseAccount.Coins)
 		accounts = append(accounts, dmodels.Account{
 			Address:   account.BaseVestingAccount.BaseAccount.Address,
 			Balance:   amount,

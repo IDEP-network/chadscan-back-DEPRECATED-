@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"time"
+	//"github.com/everstake/cosmoscan-api/log"
 )
 
 const (
@@ -239,6 +240,7 @@ func (api *API) GetLatestBlock() (block Block, err error) {
 }
 
 func (api *API) GetTx(hash string) (tx Tx, err error) {
+	//log.Info("api.go, GetTX(), hash=%s", hash)
 	endpoint := fmt.Sprintf("cosmos/tx/v1beta1/txs/%s", hash)
 	err = api.get(endpoint, nil, &tx)
 	return tx, err

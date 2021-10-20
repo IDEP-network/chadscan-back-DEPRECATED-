@@ -36,6 +36,7 @@ func (db DB) GetAggTransfersVolume(filter filters.Agg) (items []smodels.AggItem,
 	).From(dmodels.TransfersTable).
 		Where("notEmpty(trf_from)").
 		Where(squirrel.Eq{"trf_currency": dmodels.PersistenceCurrency}).
+		//Where(squirrel.Eq{"trf_currency": dmodels.IdepCurrency}).
 		GroupBy("time").
 		OrderBy("time")
 	if !filter.From.IsZero() {
@@ -53,6 +54,7 @@ func (db DB) GetTransferVolume(filter filters.TimeRange) (total decimal.Decimal,
 		From(dmodels.TransfersTable).
 		Where("notEmpty(trf_from)").
 		Where(squirrel.Eq{"trf_currency": dmodels.PersistenceCurrency})
+		//Where(squirrel.Eq{"trf_currency": dmodels.IdepCurrency})
 	q = filter.Query("trf_created_at", q)
 	err = db.FindFirst(&total, q)
 	return total, err

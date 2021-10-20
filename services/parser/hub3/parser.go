@@ -202,9 +202,12 @@ func (p *Parser) runFetcher() {
 
 				success := tx.TxResponse.Code == 0
 
-				fee, err := calculateXprtAmount(tx.Tx.AuthInfo.Fee.Amount)
+				log.Info("calling calculateIdepAmount, checkpt 1")
+				//fee, err := calculateXprtAmount(tx.Tx.AuthInfo.Fee.Amount)
+				fee, err := calculateIdepAmount(tx.Tx.AuthInfo.Fee.Amount)
 				if err != nil {
-					log.Warn("Parser: height: %d, calculateXprtAmount: %s", tx.TxResponse.Height, err.Error())
+					//log.Warn("Parser: height: %d, calculateXprtAmount: %s", tx.TxResponse.Height, err.Error())
+					log.Warn("Parser: height: %d, calculateIdepAmount: %s", tx.TxResponse.Height, err.Error())
 				}
 
 				if tx.TxResponse.Hash == "" {
@@ -508,7 +511,8 @@ func (d *data) parseMsgSend(index int, tx Tx, data []byte) (err error) {
 	}
 	currency, amount, err := calculateAmount(m.Amount)
 	if err != nil {
-		return fmt.Errorf("calculateXprtAmount: %s", err.Error())
+		//return fmt.Errorf("calculateXprtAmount: %s", err.Error())
+		return fmt.Errorf("calculateIdepAmount: %s", err.Error())
 	}
 	id := makeHash(fmt.Sprintf("%s.%d", tx.TxResponse.Hash, index))
 	d.transfers = append(d.transfers, dmodels.Transfer{
@@ -533,7 +537,8 @@ func (d *data) parseMultiSendMsg(index int, tx Tx, data []byte) (err error) {
 		id := makeHash(fmt.Sprintf("%s.%d.i.%d", tx.TxResponse.Hash, index, i))
 		currency, amount, err := calculateAmount(input.Coins)
 		if err != nil {
-			return fmt.Errorf("calculateXprtAmount: %s", err.Error())
+			//return fmt.Errorf("calculateXprtAmount: %s", err.Error())
+			return fmt.Errorf("calculateIdepAmount: %s", err.Error())
 		}
 		d.transfers = append(d.transfers, dmodels.Transfer{
 			ID:        id,
@@ -549,7 +554,8 @@ func (d *data) parseMultiSendMsg(index int, tx Tx, data []byte) (err error) {
 		id := makeHash(fmt.Sprintf("%s.%d.o.%d", tx.TxResponse.Hash, index, i))
 		currency, amount, err := calculateAmount(output.Coins)
 		if err != nil {
-			return fmt.Errorf("calculateXprtAmount: %s", err.Error())
+			//return fmt.Errorf("calculateXprtAmount: %s", err.Error())
+			return fmt.Errorf("calculateIdepAmount: %s", err.Error())
 		}
 		d.transfers = append(d.transfers, dmodels.Transfer{
 			ID:        id,
@@ -706,13 +712,17 @@ func (d *data) parseSubmitProposalMsg(tx Tx, data []byte) (err error) {
 	if id == 0 {
 		return fmt.Errorf("not found proposal_id")
 	}
-	amount, err := calculateXprtAmount(m.Content.Value.Amount)
+	//amount, err := calculateXprtAmount(m.Content.Value.Amount)
+	amount, err := calculateIdepAmount(m.Content.Value.Amount)
 	if err != nil {
-		return fmt.Errorf("calculateXprtAmount: %s", err.Error())
+		//return fmt.Errorf("calculateXprtAmount: %s", err.Error())
+		return fmt.Errorf("calculateIdepAmount: %s", err.Error())
 	}
-	initDeposit, err := calculateXprtAmount(m.InitialDeposit)
+	//initDeposit, err := calculateXprtAmount(m.InitialDeposit)
+	initDeposit, err := calculateIdepAmount(m.InitialDeposit)
 	if err != nil {
-		return fmt.Errorf("calculateXprtAmount: %s", err.Error())
+		//return fmt.Errorf("calculateXprtAmount: %s", err.Error())
+		 return fmt.Errorf("calculateIdepAmount: %s", err.Error())
 	}
 	d.proposals = append(d.proposals, dmodels.HistoryProposal{
 		ID:          id,
@@ -745,7 +755,8 @@ func (d *data) parseVoteMsg(index int, tx Tx, data []byte) (err error) {
 	case "VOTE_OPTION_NO_WITH_VETO":
 		option = "NoWithVeto"
 	default:
-		return fmt.Errorf("unknown type of option: %d", m.Option)
+		//return fmt.Errorf("unknown type of option: %d", m.Option)
+		return fmt.Errorf("unknown type of option: %s", m.Option)
 	}
 	id := makeHash(fmt.Sprintf("%s.%d.s", tx.TxResponse.Hash, index))
 	d.proposalVotes = append(d.proposalVotes, dmodels.ProposalVote{
@@ -837,13 +848,16 @@ func (d *data) parseUnjailMsg(index int, tx Tx, data []byte) (err error) {
 	return nil
 }
 
-func calculateXprtAmount(amountItems []Amount) (decimal.Decimal, error) {
+//func calculateXprtAmount(amountItems []Amount) (decimal.Decimal, error) {
+func calculateIdepAmount(amountItems []Amount) (decimal.Decimal, error) {
 	volume := decimal.Zero
 	for _, item := range amountItems {
+		log.Info("item.Denom: %s", item.Denom)
 		if item.Denom == "" && item.Amount.IsZero() { // example height=1245781
 			break
 		}
-		if item.Denom != "uxprt" {
+		//if item.Denom != "uxprt" {
+		if item.Denom != "idep" {
 			return volume, fmt.Errorf("unknown demon (currency): %s", item.Denom)
 		}
 		volume = volume.Add(item.Amount)
@@ -866,9 +880,11 @@ func calculateAmount(amountItems []Amount) (string, decimal.Decimal, error) {
 		}
 		volume = volume.Add(item.Amount)
 	}
-	if lastCurrency == "uxprt" {
+	//if lastCurrency == "uxprt" {
+	if lastCurrency == "idep" {
 		volume = volume.Div(precisionDiv)
-		lastCurrency = "xprt"
+		//lastCurrency = "xprt"
+		lastCurrency = "idep"
 	}
 	return lastCurrency, volume, nil
 }
@@ -877,7 +893,8 @@ func (a Amount) getAmount() (decimal.Decimal, error) {
 	if a.Denom == "" && a.Amount.IsZero() {
 		return decimal.Zero, nil
 	}
-	if a.Denom != "uxprt" {
+	//if a.Denom != "uxprt" {
+	if a.Denom != "idep" {
 		return decimal.Zero, fmt.Errorf("unknown demon (currency): %s", a.Denom)
 	}
 	a.Amount = a.Amount.Div(precisionDiv)
@@ -888,7 +905,8 @@ func strToAmount(str string) (decimal.Decimal, error) {
 	if str == "" {
 		return decimal.Zero, nil
 	}
-	val := strings.TrimSuffix(str, "uxprt")
+	//val := strings.TrimSuffix(str, "uxprt")
+	val := strings.TrimSuffix(str, "idep")
 	amount, err := decimal.NewFromString(val)
 	if err != nil {
 		return amount, fmt.Errorf("decimal.NewFromString: %s", err.Error())

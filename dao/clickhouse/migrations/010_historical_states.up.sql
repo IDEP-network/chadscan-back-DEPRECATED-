@@ -8,7 +8,7 @@ create table historical_states
     his_inflation_rate     Decimal(4, 2)  default 0,
     his_transactions_count UInt64         default 0,
     his_community_pool     Decimal(18, 2) default 0,
-    his_top_20_weight      Decimal(4, 2)  default 0,
+    his_top_20_weight      Decimal(5, 2)  default 0,
     his_created_at         DateTime
 ) ENGINE ReplacingMergeTree()
       PARTITION BY toYYYYMMDD(his_created_at)

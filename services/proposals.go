@@ -16,6 +16,7 @@ import (
 
 func (s *ServiceFacade) GetProposals(filter filters.Proposals) (proposals []dmodels.Proposal, err error) {
 	proposals, err = s.dao.GetProposals(filter)
+	log.Info("GetProposals() entered")
 	if err != nil {
 		return nil, fmt.Errorf("dao.GetProposals: %s", err.Error())
 	}
@@ -194,6 +195,7 @@ func (s *ServiceFacade) UpdateProposals() {
 
 func (s *ServiceFacade) GetProposalVotes(filter filters.ProposalVotes) (items []smodels.ProposalVote, err error) {
 	votes, err := s.dao.GetProposalVotes(filter)
+	log.Info("GetProposalsVotes() entered")
 	if err != nil {
 		return nil, fmt.Errorf("dao.GetProposalVotes: %s", err.Error())
 	}

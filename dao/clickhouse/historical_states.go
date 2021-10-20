@@ -6,6 +6,7 @@ import (
 	"github.com/everstake/cosmoscan-api/dao/filters"
 	"github.com/everstake/cosmoscan-api/dmodels"
 	"github.com/everstake/cosmoscan-api/smodels"
+	//"github.com/everstake/cosmoscan-api/log"
 )
 
 func (db DB) CreateHistoricalStates(states []dmodels.HistoricalState) error {
@@ -25,6 +26,9 @@ func (db DB) CreateHistoricalStates(states []dmodels.HistoricalState) error {
 		"his_created_at",
 	)
 	for _, state := range states {
+		//log.Info("stakedRatio= %s", state.StakedRatio)
+		//log.Info("inflation_rate= %s", state.InflationRate)
+		//log.Info("top20weight= %s", state.Top20Weight)
 		q = q.Values(
 			state.Price,
 			state.MarketCap,

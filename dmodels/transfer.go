@@ -6,7 +6,8 @@ import (
 )
 
 const TransfersTable = "transfers"
-const PersistenceCurrency = "xprt"
+//const PersistenceCurrency = "xprt"
+const PersistenceCurrency = "idep"
 
 type Transfer struct {
 	ID        string          `db:"trf_id"`

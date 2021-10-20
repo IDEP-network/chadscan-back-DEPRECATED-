@@ -8,9 +8,11 @@ import (
 )
 
 const (
-	ServiceName = "cosmoscan-api"
+	//ServiceName = "cosmoscan-api"
+	ServiceName = "chadscan-api"
 	configPath  = "./config.json"
-	Currency    = "xprt"
+	//Currency    = "xprt"
+	Currency    = "idep"
 )
 
 type (

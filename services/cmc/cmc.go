@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
+	"log"
 )
 
 const apiURL = "https://pro-api.coinmarketcap.com"
@@ -73,6 +74,7 @@ func (cmc *CMC) request(endpoint string, data interface{}) error {
 func (cmc *CMC) GetMarketData() (price, volume24h decimal.Decimal, err error) {
 	var currencyResp CurrenciesResponse
 	err = cmc.request("/v1/cryptocurrency/listings/latest", &currencyResp)
+	log.Info("GetMarketData() entered")
 	if currencyResp.Status.ErrorCode != 0 {
 		return price, volume24h, fmt.Errorf("error code: %d, msg: %s", currencyResp.Status.ErrorCode, currencyResp.Status.ErrorMessage)
 	}
