@@ -158,6 +158,77 @@ type (
 			NoWithVeto int64 `json:"no_with_veto,string"`
 		} `json:"tally"`
 	}
+	Balance struct {
+		Denom string `json:"denom"`
+		Amount string `json:"amount"`
+	}
+	WalletAddressResult struct {
+		Balances []Balance `json:balances`
+		Pagination struct {
+			NextKey string `json:"next_key"`
+			Total string `json:"total"`
+		} `json:"pagination"`
+	}
+	Signature struct {
+		BlockIDFlag int64 `json:"block_id_flag"`
+		Signature  string `json:"signature"`
+		Timestamp  string `json:"timestamp"`
+		ValidatorAddress  string `json:"validator_address"`
+	}
+	BlockHeightResult struct {
+		Block struct {
+			Data struct {
+				Txs []string `json:"txs"`
+			} `json:"data"`
+			Evidence struct {
+				Evidence []string `json:"evidence"`
+			} `json:"evidence"`
+			Header struct {
+				AppHash  string `json:"app_hash"`
+				ChainID  string `json:"chain_id"`
+				ConsensusHash  string `json:"consensus_hash"`
+				DataHash  string `json:"data_hash"`
+				EvidenceHash  string `json:"evidence_hash"`
+				Height  string `json:"height"`
+				LastBlockID struct {
+					Hash  string `json:"hash"`
+					Parts struct {
+						Hash  string `json:"hash"`
+						Total int64 `json:"total"`
+					} `json:"parts"`
+				} `json:"last_block_id"`
+				LastCommitHash  string `json:"last_commit_hash"`
+				LastResultsHash  string `json:"last_results_hash"`
+				NextValidatorsHash  string `json:"next_validators_hash"`
+				ProposerAddress  string `json:"proposer_address"`
+				Time  string `json:"time"`
+				ValidatorsHash  string `json:"validators_hash"`
+				Version struct {
+					Block  string `json:"block"`
+				}`json:"version"`
+			} `json:"header"`
+			LastCommit struct {
+				BlockID struct {
+					Hash string `json:"hash"`
+					Parts struct {
+						Hash string `json:"hash"`
+						Total int64 `json:"total"`
+					} `json:"block_id"`
+				} `json:"block_id"`
+				Height  string `json:"height"`
+				Round int64 `json:"round"`
+				Signatures []Signature `json:"signatures"`
+			} `json:"last_commit"`
+
+		} `json:"block"`
+		BlockID  struct {
+			Hash  string `json:"hash"`
+			Parts struct {
+				Hash string `json:"hash"`
+				Total int64 `json:"total"`
+			} `json:"parts"`
+		} `json:"block_id"`
+	}
 )
 
 func NewAPI(cfg config.Config) *API {
@@ -307,4 +378,26 @@ func (api API) ProposalTallyResult(id uint64) (result ProposalTallyResult, err e
 		return result, fmt.Errorf("request: %s", err.Error())
 	}
 	return result, nil
+}
+
+func (api API) GetBlockHeight(blockHeight string) (result BlockHeightResult, err error) {
+
+	err = api.request(fmt.Sprintf("blocks/%s", blockHeight), &result)
+        if err != nil {
+                return result, fmt.Errorf("request: %s", err.Error())
+        }
+        return result, nil
+
+	//return nil, fmt.Errorf("api.node.GetBlockHeight() incomplete")
+}
+
+func (api API) GetWalletAddress(walletAddr string) (result WalletAddressResult, err error) {
+
+	err = api.request(fmt.Sprintf("cosmos/bank/v1beta1/balances/%s", walletAddr), &result)
+        if err != nil {
+                return result, fmt.Errorf("request: %s", err.Error())
+        }
+        return result, nil
+
+	//return nil, fmt.Errorf("api.node.GetWalletAddress() incomplete")
 }

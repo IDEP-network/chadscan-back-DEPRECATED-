@@ -101,6 +101,8 @@ func (api *API) loadRoutes() {
 		{Path: "/transactions/fee/agg", Method: http.MethodGet, Func: api.GetAggTransactionsFee},
 		{Path: "/transfers/volume/agg", Method: http.MethodGet, Func: api.GetAggTransfersVolume},
 		{Path: "/operations/count/agg", Method: http.MethodGet, Func: api.GetAggOperationsCount},
+		{Path: "/block/hash/{hash}", Method: http.MethodGet, Func: api.GetBlockHash},
+		{Path: "/block/height/{height}", Method: http.MethodGet, Func: api.GetBlockHeight},
 		{Path: "/blocks/count/agg", Method: http.MethodGet, Func: api.GetAggBlocksCount},
 		{Path: "/blocks/delay/agg", Method: http.MethodGet, Func: api.GetAggBlocksDelay},
 		{Path: "/blocks/validators/uniq/agg", Method: http.MethodGet, Func: api.GetAggUniqBlockValidators},
@@ -115,6 +117,7 @@ func (api *API) loadRoutes() {
 		{Path: "/proposals/votes", Method: http.MethodGet, Func: api.GetProposalVotes},
 		{Path: "/proposals/deposits", Method: http.MethodGet, Func: api.GetProposalDeposits},
 		{Path: "/proposals/chart", Method: http.MethodGet, Func: api.GetProposalChartData},
+		{Path: "/transaction/hash/{hash}", Method: http.MethodGet, Func: api.GetTransactionHash},
 		{Path: "/validators", Method: http.MethodGet, Func: api.GetValidators},
 		{Path: "/validators/33power/agg", Method: http.MethodGet, Func: api.GetAggValidators33Power},
 		{Path: "/validators/top/proposed", Method: http.MethodGet, Func: api.GetTopProposedBlocksValidators},
@@ -128,6 +131,7 @@ func (api *API) loadRoutes() {
 		{Path: "/validator/{address}/blocks/stats", Method: http.MethodGet, Func: api.GetValidatorBlocksStat},
 		{Path: "/validator/{address}", Method: http.MethodGet, Func: api.GetValidator},
 		{Path: "/validator/{address}/delegators", Method: http.MethodGet, Func: api.GetValidatorDelegators},
+		{Path: "/wallet/address/{address}", Method: http.MethodGet, Func: api.GetWalletAddress},
 	})
 
 }

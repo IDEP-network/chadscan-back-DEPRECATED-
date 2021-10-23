@@ -41,6 +41,7 @@ type (
 		GetAggBlocksDelay(filter filters.Agg) (items []smodels.AggItem, err error)
 		GetAvgBlocksDelay(filter filters.TimeRange) (delay float64, err error)
 		GetAggUniqBlockValidators(filter filters.Agg) (items []smodels.AggItem, err error)
+		GetBlockHash(blockHash string) (block []dmodels.Block, err error)
 		CreateTransactions(transactions []dmodels.Transaction) error
 		GetAggOperationsCount(filter filters.Agg) (items []smodels.AggItem, err error)
 		GetAggTransactionsFee(filter filters.Agg) (items []smodels.AggItem, err error)
@@ -83,6 +84,7 @@ type (
 		CreateMissedBlocks(blocks []dmodels.MissedBlock) error
 		GetTopProposedBlocksValidators() (items []dmodels.ValidatorValue, err error)
 		GetMostJailedValidators() (items []dmodels.ValidatorValue, err error)
+		GetTransactionHash(txnHash string) (txn []dmodels.Transaction, err error)
 		GetValidatorsDelegatorsTotal() (values []dmodels.ValidatorValue, err error)
 		GetMissedBlocksCount(filter filters.MissedBlocks) (total uint64, err error)
 		GetValidatorDelegators(filter filters.ValidatorDelegators) (items []dmodels.ValidatorDelegator, err error)
