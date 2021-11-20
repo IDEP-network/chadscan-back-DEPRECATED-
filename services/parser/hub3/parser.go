@@ -138,6 +138,7 @@ func (p *Parser) runFetcher() {
 			var d data
 			d.height = height
 			block, err := p.api.GetBlock(height)
+			log.Info("after api.GetBlock(), block height = %d", height)
 			if err != nil {
 				log.Error("Parser: fetcher: api.GetBlock: %s", err.Error())
 				<-time.After(time.Second)
@@ -192,6 +193,7 @@ func (p *Parser) runFetcher() {
 				sha256Hash := crypto.Sha256(decodedTx)
 				hash := bytes.HexBytes(sha256Hash)
 
+				//log.Info("before api.GetTX(), txData = %s", txData)
 				tx, err := p.api.GetTx(hash.String())
 				if err != nil {
 					log.Error("Parser: fetcher: api.GetTxs: %s", err.Error())
@@ -229,6 +231,7 @@ func (p *Parser) runFetcher() {
 				})
 
 				if success {
+					log.Info("d.transactions.append() success!")
 					for i, msg := range tx.Tx.Body.Messages {
 						var baseMsg BaseMsg
 						err = json.Unmarshal(msg, &baseMsg)
@@ -852,7 +855,7 @@ func (d *data) parseUnjailMsg(index int, tx Tx, data []byte) (err error) {
 func calculateIdepAmount(amountItems []Amount) (decimal.Decimal, error) {
 	volume := decimal.Zero
 	for _, item := range amountItems {
-		log.Info("item.Denom: %s", item.Denom)
+		//log.Info("item.Denom: %s", item.Denom)
 		if item.Denom == "" && item.Amount.IsZero() { // example height=1245781
 			break
 		}

@@ -132,6 +132,20 @@ func (api *API) loadRoutes() {
 		{Path: "/validator/{address}", Method: http.MethodGet, Func: api.GetValidator},
 		{Path: "/validator/{address}/delegators", Method: http.MethodGet, Func: api.GetValidatorDelegators},
 		{Path: "/wallet/address/{address}", Method: http.MethodGet, Func: api.GetWalletAddress},
+		{Path: "/validator/misc/{address}", Method: http.MethodGet, Func: api.GetValidatorMisc},
+		{Path: "/validator/delegations/{address}", Method: http.MethodGet, Func: api.GetValidatorDelegations},
+		{Path: "/validator/governance/{address}", Method: http.MethodGet, Func: api.GetValidatorGovernance},
+		{Path: "/validator/transfer/{address}", Method: http.MethodGet, Func: api.GetValidatorTransfer},
+		{Path: "/validator/staking/{address}", Method: http.MethodGet, Func: api.GetValidatorStaking},
+		{Path: "/validator/detail/communitypool", Method: http.MethodGet, Func: api.GetValidatorCommunityPool},
+		{Path: "/validator/selfdelegate/{address}", Method: http.MethodGet, Func: api.GetValidatorSelfDelegate},
+		{Path: "/validator/powerchange/delegate/{address}", Method: http.MethodGet, Func: api.GetValidatorPowerChangeDelegate},
+		{Path: "/validator/powerchange/undelegate/{address}", Method: http.MethodGet, Func: api.GetValidatorPowerChangeUndelegate},
+		{Path: "/validator/distribution/{address}", Method: http.MethodGet, Func: api.GetValidatorDistribution},
+		{Path: "/validator/last100blocks/{address}", Method: http.MethodGet, Func: api.GetValidatorLast100Blocks},
+		{Path: "/validator/missedblocks/{address}", Method: http.MethodGet, Func: api.GetValidatorMissedBlocks},
+		{Path: "/validator/slashing/{address}", Method: http.MethodGet, Func: api.GetValidatorSlashing},
+		{Path: "/validator/proposerpriority/{address}", Method: http.MethodGet, Func: api.GetValidatorProposerPriority},
 	})
 
 }

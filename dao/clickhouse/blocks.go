@@ -6,16 +6,19 @@ import (
 	"github.com/everstake/cosmoscan-api/dao/filters"
 	"github.com/everstake/cosmoscan-api/dmodels"
 	"github.com/everstake/cosmoscan-api/smodels"
+	"github.com/everstake/cosmoscan-api/log"
 )
 
 func (db DB) CreateBlocks(blocks []dmodels.Block) error {
+	log.Info("CreateBlocks() entered, block length = %d", len(blocks))
 	if len(blocks) == 0 {
 		return nil
 	}
 	q := squirrel.Insert(dmodels.BlocksTable).Columns("blk_id", "blk_hash", "blk_proposer", "blk_created_at")
 	for _, block := range blocks {
 		if block.ID == 0 {
-			return fmt.Errorf("field ProposalID can not be 0")
+			//return fmt.Errorf("field ProposalID can not be 0")
+			return fmt.Errorf("field BlockID can not be 0")
 		}
 		if block.Hash == "" {
 			return fmt.Errorf("hash can not be empty")

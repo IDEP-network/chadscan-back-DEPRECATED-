@@ -89,6 +89,13 @@ type (
 		GetMissedBlocksCount(filter filters.MissedBlocks) (total uint64, err error)
 		GetValidatorDelegators(filter filters.ValidatorDelegators) (items []dmodels.ValidatorDelegator, err error)
 		GetValidatorDelegatorsTotal(filter filters.ValidatorDelegators) (total uint64, err error)
+		GetValidatorGovernance(selfDelegateAddr string)(votes []dmodels.ProposalVote, err error)
+		GetValidatorTransfer(selfDelegateAddr string)(transfers []dmodels.Transfer, err error)
+		GetValidatorPowerChangeDelegate(validatorAddr string)(delegations []dmodels.Delegation, err error)
+		GetValidatorDistribution(validatorAddr string)(delegator_rewards []dmodels.DelegatorReward, err error)
+		GetValidatorStaking(validatorAddr string)(validator_stakings []dmodels.ValidatorStaking, err error)
+		GetValidatorLast100Blocks(consensusAddr string)(blocks []dmodels.Block, err error)
+		GetValidatorMissedBlocks(consensusAddr string)(missed_blocks []dmodels.MissedBlock, err error)
 	}
 
 	Cache interface {

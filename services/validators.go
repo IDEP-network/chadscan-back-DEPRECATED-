@@ -346,3 +346,173 @@ func (s *ServiceFacade) GetValidatorBalance(valAddress string) (balance smodels.
 	}
 	return balance, nil
 }
+
+func (s *ServiceFacade) GetValidatorMisc(valAddress string) (result node.ValidatorMiscResult, err error) {
+
+	log.Info("service.GetValidatorMisc() entered")
+
+	result, err = s.node.GetValidatorMisc(valAddress)
+	if err != nil {
+		return node.ValidatorMiscResult{}, fmt.Errorf("node.GetValidatorMiscResult: %s", err.Error())
+	}
+
+	return result, nil
+}
+
+func (s *ServiceFacade) GetValidatorDelegations(valAddress string) (result node.DelegatorValidatorStakeResult, err error) {
+
+        log.Info("service.GetValidatorDelegations() entered")
+
+        result, err = s.node.GetValidatorDelegations(valAddress)
+        if err != nil {
+                return node.DelegatorValidatorStakeResult{}, fmt.Errorf("node.GetValidatorDelegationsResult: %s", err.Error())
+        }
+
+        return result, nil
+}
+
+func (s *ServiceFacade) GetValidatorGovernance(selfDelegateAddr string) (votes []dmodels.ProposalVote, err error) {
+
+	log.Info("service.GetValidatorGovernance() entered")
+
+	votes, err = s.dao.GetValidatorGovernance(selfDelegateAddr)
+	if err != nil {
+		return nil, fmt.Errorf("dao.GetValidatorGovernance: %s", err.Error())
+	}
+
+	return votes, nil
+
+}
+
+func (s *ServiceFacade) GetValidatorTransfer(selfDelegateAddr string)(transfers []dmodels.Transfer, err error) {
+
+	log.Info("service.GetValidatorTransfer() entered")
+
+        transfers, err = s.dao.GetValidatorTransfer(selfDelegateAddr)
+        if err != nil {
+                return nil, fmt.Errorf("dao.GetValidatorTransfer: %s", err.Error())
+        }
+
+	return transfers, nil
+}
+
+func (s *ServiceFacade) GetValidatorCommunityPool()(result node.ValidatorCommunityPoolResult, err error) {
+
+	log.Info("service.GetValidatorCommunityPool() entered")
+
+	result, err = s.node.GetValidatorCommunityPool()
+	        if err != nil {
+                return node.ValidatorCommunityPoolResult{}, fmt.Errorf("node.GetValidatorCommunityPoolResult: %s", err.Error())
+        }
+
+	return result, nil
+}
+
+func (s *ServiceFacade) GetValidatorSelfDelegate(validatorAddr string)(result node.ValidatorSelfDelegateResult, err error) {
+
+        log.Info("service.GetValidatorSelfDelegate() entered")
+
+        result, err = s.node.GetValidatorSelfDelegate(validatorAddr)
+                if err != nil {
+                return node.ValidatorSelfDelegateResult{}, fmt.Errorf("node.GetValidatorSelfDelegate: %s", err.Error())
+        }
+
+        return result, nil
+}
+
+func (s *ServiceFacade) GetValidatorPowerChangeDelegate(validatorAddr string)(delegations []dmodels.Delegation, err error) {
+
+        log.Info("service.GetValidatorPowerChangeDelegate() entered")
+
+        delegations, err = s.dao.GetValidatorPowerChangeDelegate(validatorAddr)
+                if err != nil {
+                return nil, fmt.Errorf("dao.GetValidatorPowerChangeDelegate: %s", err.Error())
+        }
+
+        return delegations, nil
+}
+
+func (s *ServiceFacade) GetValidatorPowerChangeUndelegate(validatorAddr string)(result node.ValidatorPowerChangeUndelegateResult, err error) {
+
+        log.Info("service.GetValidatorPowerChangeUndelegate() entered")
+
+        result, err = s.node.GetValidatorPowerChangeUndelegate(validatorAddr)
+                if err != nil {
+                return node.ValidatorPowerChangeUndelegateResult{}, fmt.Errorf("node.GetValidatorPowerChangeUndelegate: %s", err.Error())
+        }
+
+        return result, nil
+}
+
+func (s *ServiceFacade) GetValidatorDistribution(validatorAddr string)(delegator_rewards []dmodels.DelegatorReward, err error) {
+
+        log.Info("service.GetValidatorDistribution() entered")
+
+        delegator_rewards, err = s.dao.GetValidatorDistribution(validatorAddr)
+                if err != nil {
+                return nil, fmt.Errorf("dao.GetValidatorDistribution: %s", err.Error())
+        }
+
+        return delegator_rewards, nil
+}
+
+func (s *ServiceFacade) GetValidatorStaking(validatorAddr string)(validator_stakings []dmodels.ValidatorStaking, err error) {
+
+        log.Info("service.GetValidatorStaking() entered")
+
+        validator_stakings, err = s.dao.GetValidatorStaking(validatorAddr)
+                if err != nil {
+                return nil, fmt.Errorf("dao.GetValidatorStaking: %s", err.Error())
+        }
+
+        return validator_stakings, nil
+}
+
+func (s *ServiceFacade) GetValidatorLast100Blocks(consensusAddr string)(blocks []dmodels.Block, err error) {
+
+        log.Info("service.GetValidatorLast100Blocks() entered")
+
+        blocks, err = s.dao.GetValidatorLast100Blocks(consensusAddr)
+                if err != nil {
+                return nil, fmt.Errorf("dao.GetValidatorLast100Blocks: %s", err.Error())
+        }
+
+        return blocks, nil
+}
+
+func (s *ServiceFacade) GetValidatorMissedBlocks(consensusAddr string)(missed_blocks []dmodels.MissedBlock, err error) {
+
+        log.Info("service.GetValidatorMissedBlocks() entered")
+
+        missed_blocks, err = s.dao.GetValidatorMissedBlocks(consensusAddr)
+                if err != nil {
+                return nil, fmt.Errorf("dao.GetValidatorMissedBlocks: %s", err.Error())
+        }
+
+        return missed_blocks, nil
+}
+
+func (s *ServiceFacade) GetValidatorSlashing(validatorAddr string)(result node.ValidatorSlashingResult, err error) {
+
+        log.Info("service.GetValidatorSlashing() entered")
+
+        result, err = s.node.GetValidatorSlashing(validatorAddr)
+                if err != nil {
+		return node.ValidatorSlashingResult{}, fmt.Errorf("node.GetValidatorSlashing: %s", err.Error())
+        }
+
+        return result, nil
+}
+
+func (s *ServiceFacade) GetValidatorProposerPriority(validatorAddr string)(result node.ValidatorProposerPriorityResult, err error) {
+
+        log.Info("service.GetValidatorProposerPriority() entered")
+
+        result, err = s.node.GetValidatorProposerPriority(validatorAddr)
+                if err != nil {
+                return node.ValidatorProposerPriorityResult{}, fmt.Errorf("node.GetValidatorProposerPriority: %s", err.Error())
+        }
+
+        return result, nil
+}
+

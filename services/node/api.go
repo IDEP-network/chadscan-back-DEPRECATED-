@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/everstake/cosmoscan-api/config"
 	"github.com/shopspring/decimal"
+	"github.com/everstake/cosmoscan-api/log"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -163,7 +164,7 @@ type (
 		Amount string `json:"amount"`
 	}
 	WalletAddressResult struct {
-		Balances []Balance `json:balances`
+		Balances []Balance `json:"balances"`
 		Pagination struct {
 			NextKey string `json:"next_key"`
 			Total string `json:"total"`
@@ -229,6 +230,88 @@ type (
 			} `json:"parts"`
 		} `json:"block_id"`
 	}
+	ValidatorMiscResult struct {
+		Height string `json:"height"`
+		Result struct {
+			Commission struct {
+				CommissionRates struct {
+					MaxChangeRate string `json:"max_change_rate"` 
+					MaxRate string `json:"max_rate"`
+					Rate string `json:"rate"`
+				} `json:"commission_rates"`
+				UpdateTime string `json:"update_time"`
+			} `json:"commission"`
+			ConsensusPubKey struct {
+				Type string `json:"type"`
+				Value string `json:"value"`
+			} `json:"consensus_pubkey"`
+			DelegatorShares string `json:"delegator_shares"`
+			Description struct {
+				Moniker string `json:"moniker"`
+			} `json:"description"`
+			MinSelfDelegation string `json:"min_self_delegation"`
+			OperatorAddress string `json:"operator_address"`
+			Status int64 `json:"status"`
+			Tokens string `json:"tokens"`
+			UnboundingTime string `json:"unbounding_time"`
+		} `json:"result"`
+	}
+	ValidatorCommunityPoolResult struct {
+		Height string `json:"height"`
+		Results []struct {
+			Denom string `json:"denom"`
+			Amount string `json:"amount"`
+		} `json:"result"`
+	}
+	SelfBondReward struct {
+		Denom string `json:"denom"`
+		Amount string `json:"amonut"`
+	}
+	SelfDelegateCommission struct {
+		Denom string `json:"denom"`
+                Amount string `json:"amonut"`
+	}
+	ValidatorSelfDelegateResult struct {
+		Height string `json:"height"`
+		Result struct {
+			OperatorAddress string `json:"operator_address"`
+			SelfBondRewards []SelfBondReward `json:"self_bond_rewards"`
+			ValCommission struct {
+				SelfDelegateCommissions []SelfDelegateCommission `json:"commission"`
+			} `json:"val_commission"`
+		} `json:"result"`
+	}
+	ValidatorPowerChangeUndelegateResult struct {
+		Unbonding_Responses []struct {
+			DelegatorAddress string `json:"delegator_address"`
+			ValidatorAddress string `json:"validator_address"`
+			Entries          []struct {
+				Balance string `json:"balance"`
+				CompletionTime string `json:"completion_time"`
+				CreationHeight string `json:"creation_height"`
+				InitialBalance string `json:"initial_balance"`
+			} `json:"entries"`
+		} `json:"unbonding_responses"`
+	}
+	ValidatorSlashingResult struct {
+		Slashes []struct {
+			ValidatorPeriod string `json:"validator_period"`
+			Fraction string `json:"fraction"`
+		} `json:"slashes"`
+		Pagination struct {
+			NextKey string `json:"next_key"`
+			Total   string `json:"total"`
+		} `json:"pagination"`
+	}
+	ValidatorProposerPriorityResult struct {
+		BlockHeight string `json:"block_height"`
+		Validators []struct {
+			Address string `json:"address"`
+			PubKey string `json:"pub_key"`
+			VotingPower string `json:"voting_power"`
+			ProposerPriority string `json:"proposer_priority"`
+		} `json:"validators"`
+	}
 )
 
 func NewAPI(cfg config.Config) *API {
@@ -276,6 +359,7 @@ func (api API) GetCommunityPoolAmount() (amount decimal.Decimal, err error) {
 
 func (api API) GetValidators() (items []Validator, err error) {
 	var validators Validators
+	log.Info("node.api.GetValidators() called!")
 	err = api.request("cosmos/staking/v1beta1/validators?pagination.limit=10000", &validators)
 	if err != nil {
 		return nil, fmt.Errorf("request: %s", err.Error())
@@ -400,4 +484,86 @@ func (api API) GetWalletAddress(walletAddr string) (result WalletAddressResult, 
         return result, nil
 
 	//return nil, fmt.Errorf("api.node.GetWalletAddress() incomplete")
+}
+
+func (api API) GetValidatorMisc(validatorAddr string) (result ValidatorMiscResult, err error) {
+
+        err = api.request(fmt.Sprintf("staking/validators/%s", validatorAddr), &result)
+        if err != nil {
+                return result, fmt.Errorf("request: %s", err.Error())
+        }
+        return result, nil
+
+        //return nil, fmt.Errorf("api.node.GetWalletAddress() incomplete")
+}
+
+func (api API) GetValidatorDelegations(validatorAddr string) (result DelegatorValidatorStakeResult, err error) {
+
+        err = api.request(fmt.Sprintf("staking/validators/%s/delegations", validatorAddr), &result)
+        if err != nil {
+                return result, fmt.Errorf("request: %s", err.Error())
+        }
+        return result, nil
+
+        //return nil, fmt.Errorf("api.node.GetWalletAddress() incomplete")
+}
+
+func (api API) GetValidatorCommunityPool() (result ValidatorCommunityPoolResult, err error) {
+
+	err = api.request("distribution/community_pool", &result)
+	if err != nil {
+                return result, fmt.Errorf("request: %s", err.Error())
+        }
+        return result, nil
+
+}
+
+func (api API) GetValidatorSelfDelegate(validatorAddr string) (result ValidatorSelfDelegateResult, err error) {
+
+        err = api.request(fmt.Sprintf("distribution/validators/%s", validatorAddr), &result)
+	if err != nil {
+                return result, fmt.Errorf("request: %s", err.Error())
+        }
+        return result, nil
+
+}
+
+func (api API) GetValidatorPowerChangeUndelegate(validatorAddr string) (result ValidatorPowerChangeUndelegateResult, err error) {
+
+	err = api.request(fmt.Sprintf("cosmos/staking/v1beta1/validators/%s/unbonding_delegations", validatorAddr), &result)
+        if err != nil {
+                return result, fmt.Errorf("request: %s", err.Error())
+        }
+        return result, nil
+
+}
+
+func (api API) GetValidatorSlashing(validatorAddr string) (result ValidatorSlashingResult, err error) {
+
+        err = api.request(fmt.Sprintf("cosmos/distribution/v1beta1/validators/%s/slashes", validatorAddr), &result)
+        if err != nil {
+                return result, fmt.Errorf("request: %s", err.Error())
+        }
+        return result, nil
+
+}
+
+func (api API) GetValidatorProposerPriority(validatorAddr string) (result ValidatorProposerPriorityResult, err error) {
+
+	var validatorMiscResult  ValidatorMiscResult
+
+        err = api.request(fmt.Sprintf("staking/validators/%s", validatorAddr), &validatorMiscResult)
+        if err != nil {
+                return result, fmt.Errorf("request: %s", err.Error())
+        }
+
+	err = api.request("validatorsets/latest", &result)
+        if err != nil {
+                return result, fmt.Errorf("request: %s", err.Error())
+        }
+
+	//fixme: return only the entry that is having consensus key address = validatorMiscResult.consensus_pubkey.value
+
+        return result, nil
+
 }

@@ -57,6 +57,20 @@ type (
 		GetAggUnbondingVolume(filter filters.Agg) (items []smodels.AggItem, err error)
 		GetBlockHeight(blockHeight string) (result node.BlockHeightResult, err error)
 		GetWalletAddress(walletAddr string) (result node.WalletAddressResult, err error)
+		GetValidatorMisc(validatorAddr string) (result node.ValidatorMiscResult, err error)
+		GetValidatorDelegations(validatorAddr string) (result node.DelegatorValidatorStakeResult, err error)
+		GetValidatorGovernance(selfDelegateAddr string)(votes []dmodels.ProposalVote, err error)
+		GetValidatorTransfer(selfDelegateAddr string)(transfers []dmodels.Transfer, err error)
+		GetValidatorCommunityPool()(result node.ValidatorCommunityPoolResult, err error)
+		GetValidatorSelfDelegate(validatorAddr string)(result node.ValidatorSelfDelegateResult, err error)
+		GetValidatorPowerChangeDelegate(validatorAddr string)(delegations []dmodels.Delegation, err error)
+		GetValidatorPowerChangeUndelegate(validatorAddr string)(result node.ValidatorPowerChangeUndelegateResult, err error)
+		GetValidatorDistribution(validatorAddr string)(delegator_rewards []dmodels.DelegatorReward, err error)
+		GetValidatorStaking(validatorAddr string)(delegator_rewards []dmodels.ValidatorStaking, err error)
+		GetValidatorLast100Blocks(consensusAddr string)(blocks []dmodels.Block, err error)
+		GetValidatorMissedBlocks(consensusAddr string)(missed_blocks []dmodels.MissedBlock, err error)
+		GetValidatorSlashing(validatorAddr string)(result node.ValidatorSlashingResult, err error)
+		GetValidatorProposerPriority(validatorAddr string)(result node.ValidatorProposerPriorityResult, err error)
 		Test() (state dmodels.HistoricalState, err error)
 	}
 	CryptoMarket interface {
@@ -76,6 +90,13 @@ type (
 		ProposalTallyResult(id uint64) (result node.ProposalTallyResult, err error)
 		GetBlockHeight(blockHeight string) (result node.BlockHeightResult, err error)
 		GetWalletAddress(walletAddr string) (result node.WalletAddressResult, err error)
+		GetValidatorMisc(validatorAddr string) (result node.ValidatorMiscResult, err error)
+		GetValidatorDelegations(validatorAddr string) (result node.DelegatorValidatorStakeResult, err error)
+		GetValidatorCommunityPool()(result node.ValidatorCommunityPoolResult, err error)
+		GetValidatorSelfDelegate(validatorAddr string)(result node.ValidatorSelfDelegateResult, err error)
+		GetValidatorPowerChangeUndelegate(validatorAddr string)(result node.ValidatorPowerChangeUndelegateResult, err error)
+		GetValidatorSlashing(validatorAddr string)(result node.ValidatorSlashingResult, err error)
+		GetValidatorProposerPriority(validatorAddr string)(result node.ValidatorProposerPriorityResult, err error)
 	}
 
 	ServiceFacade struct {
