@@ -304,13 +304,19 @@ type (
 		} `json:"pagination"`
 	}
 	ValidatorProposerPriorityResult struct {
-		BlockHeight string `json:"block_height"`
-		Validators []struct {
-			Address string `json:"address"`
-			PubKey string `json:"pub_key"`
-			VotingPower string `json:"voting_power"`
-			ProposerPriority string `json:"proposer_priority"`
-		} `json:"validators"`
+		Height string `json:"height"`
+		Result struct {
+			BlockHeight string `json:"block_height"`
+			Validators []struct {
+                                Address string `json:"address"`
+                                PubKey struct {
+					Type string `json:"type"`
+					Value string `json:"value"`
+				} `json:"pub_key"`
+				VotingPower string `json:"voting_power"`
+				ProposerPriority string `json:"proposer_priority"`
+			} `json:"validators"`
+		} `json:"result"`
 	}
 )
 
@@ -551,6 +557,7 @@ func (api API) GetValidatorSlashing(validatorAddr string) (result ValidatorSlash
 func (api API) GetValidatorProposerPriority(validatorAddr string) (result ValidatorProposerPriorityResult, err error) {
 
 	var validatorMiscResult  ValidatorMiscResult
+	var validatorProposerPriorityResult ValidatorProposerPriorityResult
 
         err = api.request(fmt.Sprintf("staking/validators/%s", validatorAddr), &validatorMiscResult)
         if err != nil {
@@ -562,8 +569,24 @@ func (api API) GetValidatorProposerPriority(validatorAddr string) (result Valida
                 return result, fmt.Errorf("request: %s", err.Error())
         }
 
-	//fixme: return only the entry that is having consensus key address = validatorMiscResult.consensus_pubkey.value
+	//return only the entry that is having consensus key address = validatorMiscResult.result.consensus_pubkey.value
 
-        return result, nil
+	//log.Info("result = %s", result)
+	log.Info("block height = %s", result.Result.BlockHeight)
+
+	consensus_pkey := validatorMiscResult.Result.ConsensusPubKey.Value
+	log.Info("consensus_pkey = %s", consensus_pkey)
+
+        for _, v := range result.Result.Validators {
+                if v.PubKey.Value == consensus_pkey {
+			log.Info("Found matched consensus_pkey!")
+			validatorProposerPriorityResult.Result.Validators = append(validatorProposerPriorityResult.Result.Validators, v)
+			validatorProposerPriorityResult.Result.BlockHeight = result.Result.BlockHeight
+			validatorProposerPriorityResult.Height = result.Height
+			break
+		}
+        }
+
+	return validatorProposerPriorityResult, nil
 
 }
