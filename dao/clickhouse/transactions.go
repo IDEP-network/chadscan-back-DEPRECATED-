@@ -2,11 +2,13 @@ package clickhouse
 
 import (
 	"fmt"
+	"strconv"
 	"github.com/Masterminds/squirrel"
 	"github.com/everstake/cosmoscan-api/dao/filters"
 	"github.com/everstake/cosmoscan-api/dmodels"
 	"github.com/everstake/cosmoscan-api/smodels"
 	"github.com/shopspring/decimal"
+	"github.com/everstake/cosmoscan-api/log"
 )
 
 func (db DB) CreateTransactions(transactions []dmodels.Transaction) error {
@@ -88,4 +90,19 @@ func (db DB) GetAvgOperationsPerBlock(filter filters.Agg) (items []smodels.AggIt
 	q := filter.BuildQuery(aggValue, "trn_created_at", dmodels.TransactionsTable)
 	err = db.Find(&items, q)
 	return items, err
+}
+
+func (db DB) GetLatestTransactions(count string) (latest_transactions []dmodels.Transaction, err error) {
+
+	log.Info("dao.clickhouse.GetLatestTransactions() entered")
+
+	icount, conv_err := strconv.ParseInt(count, 10, 64) //strconv.Atoi(count)
+	if conv_err != nil {
+		return nil, fmt.Errorf("dao.clickhouse.GetLatestTransactions: %s", conv_err.Error())
+	}
+
+	q := squirrel.Select("*").From(dmodels.TransactionsTable).OrderBy("trn_created_at desc").Limit(uint64(icount))
+	err = db.Find(&latest_transactions, q)
+
+	return latest_transactions, err
 }

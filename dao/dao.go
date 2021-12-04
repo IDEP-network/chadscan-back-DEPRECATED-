@@ -96,6 +96,7 @@ type (
 		GetValidatorStaking(validatorAddr string)(validator_stakings []dmodels.ValidatorStaking, err error)
 		GetValidatorLast100Blocks(consensusAddr string)(blocks []dmodels.Block, err error)
 		GetValidatorMissedBlocks(consensusAddr string)(missed_blocks []dmodels.MissedBlock, err error)
+		GetLatestTransactions(count string)(latest_transactions []dmodels.Transaction, err error)
 	}
 
 	Cache interface {

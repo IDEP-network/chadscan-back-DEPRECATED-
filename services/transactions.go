@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"github.com/everstake/cosmoscan-api/dao/filters"
 	"github.com/everstake/cosmoscan-api/smodels"
+	"github.com/everstake/cosmoscan-api/log"
+	"github.com/everstake/cosmoscan-api/dmodels"
 )
 
 func (s *ServiceFacade) GetAggTransactionsFee(filter filters.Agg) (items []smodels.AggItem, err error) {
@@ -28,4 +30,16 @@ func (s *ServiceFacade) GetAvgOperationsPerBlock(filter filters.Agg) (items []sm
 		return nil, fmt.Errorf("dao.GetAvgOperationsPerBlock: %s", err.Error())
 	}
 	return items, nil
+}
+
+func (s *ServiceFacade) GetLatestTransactions (count string) (latest_transactions []dmodels.Transaction, err error) {
+
+        log.Info("services.GetLatestTransactions() entered")
+
+	latest_transactions, err = s.dao.GetLatestTransactions(count)
+	if err != nil {
+		return nil, fmt.Errorf("dao.GetLatestTransactions: %s", err.Error())
+	}
+
+	return latest_transactions, nil
 }

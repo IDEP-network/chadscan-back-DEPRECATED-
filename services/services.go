@@ -71,6 +71,7 @@ type (
 		GetValidatorMissedBlocks(consensusAddr string)(missed_blocks []dmodels.MissedBlock, err error)
 		GetValidatorSlashing(validatorAddr string)(result node.ValidatorSlashingResult, err error)
 		GetValidatorProposerPriority(validatorAddr string)(result node.ValidatorProposerPriorityResult, err error)
+		GetLatestTransactions(count string)(latest_transactions []dmodels.Transaction, err error)
 		Test() (state dmodels.HistoricalState, err error)
 	}
 	CryptoMarket interface {
