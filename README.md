@@ -4,7 +4,7 @@
 # Chadscan Backend
 
 Website: https://chadscan.com
-Frontend repo: https://github.com/everstake/cosmoscan-front
+Frontend repo: https://github.com/IDEP-network/blockexplorer-front
 
 Chadscan is the first block explorer for the IDEP network. It provides information oт the overall network operations, governance details, validators and much more.
 The backend is currently a fork from cosmoscan.
