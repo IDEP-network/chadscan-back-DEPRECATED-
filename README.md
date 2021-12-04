@@ -3,7 +3,11 @@
 
 # Chadscan Backend
 
-Website: https://chadscan.com
+Production Website: https://chadscan.com
+
+Dev URL: https://brave-ramanujan-0fe091.netlify.app/
+
+
 Frontend repo: https://github.com/IDEP-network/blockexplorer-front
 
 Chadscan is the first block explorer for the IDEP network. It provides information oт the overall network operations, governance details, validators and much more.
