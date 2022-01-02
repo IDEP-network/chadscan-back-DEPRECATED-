@@ -391,3 +391,42 @@ func (api *API) GetValidatorProposerPriority (w http.ResponseWriter, r *http.Req
         jsonData(w, resp)
 }
 
+func (api *API) GetValidatorUptimePercent (w http.ResponseWriter, r *http.Request) {
+
+        log.Info("api.GetValidatorUptimePercent() entered")
+
+        address, ok := mux.Vars(r)["address"]
+        if !ok || address == "" {
+                jsonBadRequest(w, "invalid address")
+                return
+        }
+
+        resp, err := api.svc.GetValidatorUptimePercent(address)
+        if err != nil {
+                log.Error("API GetValidatorUptimePercent: svc.GetValidatorUptimePercent: %s", err.Error())
+                jsonError(w)
+                return
+        }
+
+        jsonData(w, resp)
+}
+
+func (api *API) GetValidatorAggInfo (w http.ResponseWriter, r *http.Request) {
+
+	log.Info("api.GetValidatorAggInfo() entered")
+
+	address, ok := mux.Vars(r)["address"]
+        if !ok || address == "" {
+                jsonBadRequest(w, "invalid address")
+                return
+        }
+
+	resp, err := api.svc.GetValidatorAggInfo(address)
+        if err != nil {
+                log.Error("API GetValidatorAggInfo: svc.GetValidatorAggInfo: %s", err.Error())
+                jsonError(w)
+                return
+        }
+
+	jsonData(w, resp)
+}

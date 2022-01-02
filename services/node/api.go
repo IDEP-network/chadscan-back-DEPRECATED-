@@ -318,6 +318,15 @@ type (
 			} `json:"validators"`
 		} `json:"result"`
 	}
+	ValidatorAggInfoResult struct {
+		Name string `json:"name"`
+		Delegated decimal.Decimal `json:"delegated`
+		Delegated_percent decimal.Decimal `json:"delegated_percent"`
+		Commission string `json:"commission"`
+		Active int64 `json:"active"`
+		Uptime float64 `json:"uptime"`
+	}
+
 )
 
 func NewAPI(cfg config.Config) *API {
