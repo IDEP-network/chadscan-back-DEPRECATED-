@@ -525,21 +525,6 @@ func (s *ServiceFacade) GetValidatorUptimePercent(consensusAddr string)(uptimepe
 		return 0, fmt.Errorf("dao.GetValidatorUptimePercent: %s", err.Error())
 	}
 
-/*	
-	var validatorProposerPriorityResult ValidatorProposerPriorityResult
-
-	err = api.request("validatorsets/latest", &validatorProposerPriorityResult)
-        if err != nil {
-		return 0, fmt.Errorf("GetValidatorUptimePercent() -> validatorProposerPriorityResult: %s", err.Error())
-        }
-*/
-
-/*
-        missed_blocks, err = s.dao.GetValidatorMissedBlocks(consensusAddr)
-                if err != nil {
-                return nil, fmt.Errorf("dao.GetValidatorMissedBlocks: %s", err.Error())
-        }
-*/
         return uptimepercent, nil
 }
 
@@ -547,7 +532,7 @@ func (s *ServiceFacade) GetValidatorAggInfo(validatorAddr string)(result node.Va
 
 	log.Info("service.GetValidatorAggInfo() entered")
 
-	nameResult, err := s.GetValidator(validatorAddr)
+	validatorResult, err := s.GetValidator(validatorAddr)
 	if err != nil {
                 return node.ValidatorAggInfoResult{}, fmt.Errorf("GetValidatorAggInfo() -> GetValidator: %s", err.Error())
         }
@@ -559,23 +544,26 @@ func (s *ServiceFacade) GetValidatorAggInfo(validatorAddr string)(result node.Va
 
 	miscResult, err := s.GetValidatorMisc(validatorAddr)
 	if err != nil {
-                return node.ValidatorAggInfoResult{}, fmt.Errorf("GetValidatorAggInfo() -> s.s.GetValidatorMisc: %s", err.Error())
+                return node.ValidatorAggInfoResult{}, fmt.Errorf("GetValidatorAggInfo() -> s.GetValidatorMisc: %s", err.Error())
         }
 
-	log.Info("assigning name in GetValidatorAggInfo()...")
-	result.Name = nameResult.Title
+	cons_address := validatorResult.ConsAddress
+	uptimepercentResult, err := s.GetValidatorUptimePercent(cons_address)
+	if err != nil {
+		return node.ValidatorAggInfoResult{}, fmt.Errorf("GetValidatorAggInfo() -> s.GetValidatorUptimePercent: %s", err.Error())
+	}
 
 	delegated := balanceResult.SelfDelegated
 	other_delegated := balanceResult.OtherDelegated
 	available := balanceResult.Available
 	total := delegated.Add(other_delegated).Add(available)
 
+	result.Name = validatorResult.Title
 	result.Delegated = delegated
 	result.Delegated_percent = delegated.Div(total)
 	result.Commission = miscResult.Result.Commission.CommissionRates.Rate
 	result.Active = miscResult.Result.Status
-
-	//fixme: uptime api needed here
+	result.Uptime = uptimepercentResult
 
 	return result, nil
 }

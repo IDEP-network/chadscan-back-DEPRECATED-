@@ -320,7 +320,7 @@ type (
 	}
 	ValidatorAggInfoResult struct {
 		Name string `json:"name"`
-		Delegated decimal.Decimal `json:"delegated`
+		Delegated decimal.Decimal `json:"delegated"`
 		Delegated_percent decimal.Decimal `json:"delegated_percent"`
 		Commission string `json:"commission"`
 		Active int64 `json:"active"`
