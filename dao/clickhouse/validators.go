@@ -116,10 +116,10 @@ func (db DB) GetValidatorUptimePercent(consensusAddr string) (uptimepercent floa
 
 	var latestBlock []dmodels.Block	//latest block
 	var prevBlock []dmodels.Block	//the block that is 500 blocks prior to the latest block
-	var numMissedBlocks int64
+	var numMissedBlocks uint64
 
 	q := squirrel.Select("*").From(dmodels.BlocksTable).OrderBy("blk_id desc").Limit(1)
-	err = db.Find(latestBlock, q)
+	err = db.Find(&latestBlock, q)
 
 	if err != nil {
 		return 0, fmt.Errorf("dao.clickhouse.GetValidatorUptimePercent - 0: %s", err.Error())
@@ -133,23 +133,23 @@ func (db DB) GetValidatorUptimePercent(consensusAddr string) (uptimepercent floa
 	}
 
 	q = squirrel.Select("*").From(dmodels.BlocksTable).Where(squirrel.Eq{"blk_id": prevBlockId})
-        err = db.Find(prevBlock, q)
+        err = db.Find(&prevBlock, q)
 
 	if err != nil {
                 return 0, fmt.Errorf("dao.clickhouse.GetValidatorUptimePercent - 1: %s", err.Error())
-        }
+	}
 
-        q = squirrel.Select("count (*)").From(dmodels.MissedBlocks).Where( squirrel.And{
+	q = squirrel.Select("count (*)").From(dmodels.MissedBlocks).Where( squirrel.And{
 		squirrel.Eq{"mib_validator": consensusAddr},
 		squirrel.GtOrEq{"mib_created_at": prevBlock[0].CreatedAt},
 		squirrel.LtOrEq{"mib_created_at": latestBlock[0].CreatedAt},
 		})
 
-        err = db.Find(&numMissedBlocks, q)
+        err = db.FindFirst(&numMissedBlocks, q)
 
 	if err != nil {
                 return 0, fmt.Errorf("dao.clickhouse.GetValidatorUptimePercent - 2: %s", err.Error())
-        }
+	}
 
 	uptimepercent = 100*float64(numMissedBlocks)/float64(500)
 
