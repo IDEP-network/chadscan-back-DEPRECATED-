@@ -8,7 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
-	"log"
+	"github.com/everstake/cosmoscan-api/log" //"log"
 )
 
 const apiURL = "https://pro-api.coinmarketcap.com"
