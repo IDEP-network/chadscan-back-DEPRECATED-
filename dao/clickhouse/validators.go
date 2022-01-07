@@ -151,7 +151,7 @@ func (db DB) GetValidatorUptimePercent(consensusAddr string) (uptimepercent floa
                 return 0, fmt.Errorf("dao.clickhouse.GetValidatorUptimePercent - 2: %s", err.Error())
 	}
 
-	uptimepercent = 100*float64(numMissedBlocks)/float64(500)
+	uptimepercent = 100*float64(500 - numMissedBlocks)/float64(500)
 
 	return uptimepercent, nil
 
