@@ -562,7 +562,7 @@ func (s *ServiceFacade) GetValidatorAggInfo(validatorAddr string)(result node.Va
 	result.Delegated = delegated
 	result.Delegated_percent = delegated.Div(total)
 	result.Commission = miscResult.Result.Commission.CommissionRates.Rate
-	result.Active = miscResult.Result.Status
+	result.Status = miscResult.Result.Status
 	result.Uptime = uptimepercentResult
 
 	return result, nil

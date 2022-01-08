@@ -323,7 +323,7 @@ type (
 		Delegated decimal.Decimal `json:"delegated"`
 		Delegated_percent decimal.Decimal `json:"delegated_percent"`
 		Commission string `json:"commission"`
-		Active int64 `json:"active"`
+		Status int64 `json:"status"`
 		Uptime float64 `json:"uptime"`
 	}
 
