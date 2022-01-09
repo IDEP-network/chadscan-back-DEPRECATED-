@@ -252,7 +252,7 @@ type (
 			MinSelfDelegation string `json:"min_self_delegation"`
 			OperatorAddress string `json:"operator_address"`
 			Status int64 `json:"status"`
-			Tokens string `json:"tokens"`
+			Tokens uint64 `json:"tokens,string"`
 			UnboundingTime string `json:"unbounding_time"`
 		} `json:"result"`
 	}
@@ -320,11 +320,11 @@ type (
 	}
 	ValidatorAggInfoResult struct {
 		Name string `json:"name"`
-		Delegated decimal.Decimal `json:"delegated"`
-		Delegated_percent decimal.Decimal `json:"delegated_percent"`
-		Commission string `json:"commission"`
+		Delegated float64 `json:"delegated"`
+		DelegatedPercent float64 `json:"delegated_percent"`
+		CommissionPercent float64 `json:"commission_percent"`
 		Status int64 `json:"status"`
-		Uptime float64 `json:"uptime"`
+		UptimePercent float64 `json:"uptime_percent"`
 	}
 
 )
@@ -486,8 +486,6 @@ func (api API) GetBlockHeight(blockHeight string) (result BlockHeightResult, err
                 return result, fmt.Errorf("request: %s", err.Error())
         }
         return result, nil
-
-	//return nil, fmt.Errorf("api.node.GetBlockHeight() incomplete")
 }
 
 func (api API) GetWalletAddress(walletAddr string) (result WalletAddressResult, err error) {
@@ -497,8 +495,6 @@ func (api API) GetWalletAddress(walletAddr string) (result WalletAddressResult, 
                 return result, fmt.Errorf("request: %s", err.Error())
         }
         return result, nil
-
-	//return nil, fmt.Errorf("api.node.GetWalletAddress() incomplete")
 }
 
 func (api API) GetValidatorMisc(validatorAddr string) (result ValidatorMiscResult, err error) {
@@ -508,8 +504,6 @@ func (api API) GetValidatorMisc(validatorAddr string) (result ValidatorMiscResul
                 return result, fmt.Errorf("request: %s", err.Error())
         }
         return result, nil
-
-        //return nil, fmt.Errorf("api.node.GetWalletAddress() incomplete")
 }
 
 func (api API) GetValidatorDelegations(validatorAddr string) (result DelegatorValidatorStakeResult, err error) {
@@ -519,8 +513,6 @@ func (api API) GetValidatorDelegations(validatorAddr string) (result DelegatorVa
                 return result, fmt.Errorf("request: %s", err.Error())
         }
         return result, nil
-
-        //return nil, fmt.Errorf("api.node.GetWalletAddress() incomplete")
 }
 
 func (api API) GetValidatorCommunityPool() (result ValidatorCommunityPoolResult, err error) {

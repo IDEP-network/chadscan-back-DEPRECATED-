@@ -15,6 +15,7 @@ import (
 	//"persistenceCore/application"
 	"github.com/shopspring/decimal"
 	"sort"
+	"strconv"
 	"time"
 )
 
@@ -537,10 +538,11 @@ func (s *ServiceFacade) GetValidatorAggInfo(validatorAddr string)(result node.Va
                 return node.ValidatorAggInfoResult{}, fmt.Errorf("GetValidatorAggInfo() -> GetValidator: %s", err.Error())
         }
 
-	balanceResult, err := s.GetValidatorBalance(validatorAddr)
+	stakingPoolResult, err := s.node.GetStakingPool()
 	if err != nil {
-                return node.ValidatorAggInfoResult{}, fmt.Errorf("GetValidatorAggInfo() -> s.GetValidatorBalance: %s", err.Error())
-        }
+		log.Error("GetValidatorAggInfo() -> s.node.GetStakingPool: %s", err.Error())
+		return
+	}
 
 	miscResult, err := s.GetValidatorMisc(validatorAddr)
 	if err != nil {
@@ -553,17 +555,23 @@ func (s *ServiceFacade) GetValidatorAggInfo(validatorAddr string)(result node.Va
 		return node.ValidatorAggInfoResult{}, fmt.Errorf("GetValidatorAggInfo() -> s.GetValidatorUptimePercent: %s", err.Error())
 	}
 
-	delegated := balanceResult.SelfDelegated
-	other_delegated := balanceResult.OtherDelegated
-	available := balanceResult.Available
-	total := delegated.Add(other_delegated).Add(available)
+	delegated := float64(miscResult.Result.Tokens)/100000000
+
+	bonded_tokens, _ := stakingPoolResult.Pool.BondedTokens.Float64()
+
+	log.Info("GetValidatorAggInfo() -> bonded_tokens(0): %g", bonded_tokens)
+
+	bonded_tokens = bonded_tokens/100
+	commission, _ := strconv.ParseFloat(miscResult.Result.Commission.CommissionRates.Rate, 64)
+
+	log.Info("GetValidatorAggInfo() -> bonded_tokens(1): %g", bonded_tokens)
 
 	result.Name = validatorResult.Title
-	result.Delegated = delegated
-	result.Delegated_percent = delegated.Div(total)
-	result.Commission = miscResult.Result.Commission.CommissionRates.Rate
+        result.Delegated = delegated
+	result.DelegatedPercent = 100*delegated/bonded_tokens
+	result.CommissionPercent = 100*commission
 	result.Status = miscResult.Result.Status
-	result.Uptime = uptimepercentResult
+	result.UptimePercent = uptimepercentResult
 
 	return result, nil
 }
