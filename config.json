@@ -1,0 +1,30 @@
+{
+  "api": {
+    "port": "5001",
+    "allowed_hosts": [
+       "localhost:5001",
+       "localhost:3000"
+    ]
+  },
+  "mysql": {
+    "host": "localhost",
+    "port": "3306",
+    "db": "mytestdb",
+    "user": "test",
+    "password": "newpassword"
+  },
+  "clickhouse": {
+    "protocol": "http",
+    "host": "127.0.0.1",
+    "port": 8123,
+    "user":  "default",
+    "password": "snailison50Meth",
+    "database": "cosmoshub3"
+  },
+  "parser": {
+    "node": "http://localhost:1317",
+    "batch": 500,
+    "fetchers": 5
+  },
+  "cmc_key": ""
+}
