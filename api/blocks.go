@@ -1,6 +1,8 @@
 package api
 
 import (
+	"github.com/everstake/cosmoscan-api/log"
+	"github.com/gorilla/mux"
 	"net/http"
 )
 
@@ -14,4 +16,27 @@ func (api *API) GetAggBlocksDelay(w http.ResponseWriter, r *http.Request) {
 
 func (api *API) GetAggUniqBlockValidators(w http.ResponseWriter, r *http.Request) {
 	api.aggHandler(w, r, api.svc.GetAggUniqBlockValidators)
+}
+
+func (api *API) GetBlockTransactionCounts(w http.ResponseWriter, r *http.Request) {
+
+	log.Info("GetBlockTransactionCounts() entered")
+
+	height, ok := mux.Vars(r)["height"]
+	if !ok || height == "" {
+		jsonBadRequest(w, "invalid height")
+		return
+	}
+
+	resp, err := api.svc.GetBlockTransactionCounts(height)
+	if err != nil {
+		log.Error("API GetBlockTransactionCounts: svc.GetBlockTransactionCounts: %s", err.Error())
+		jsonError(w)
+		return
+	}
+
+	log.Info("block height = %s", height)
+
+	jsonData(w, resp)
+
 }

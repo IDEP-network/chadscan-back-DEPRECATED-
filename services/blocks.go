@@ -5,6 +5,7 @@ import (
 	"github.com/everstake/cosmoscan-api/dao/filters"
 	"github.com/everstake/cosmoscan-api/smodels"
 	"github.com/shopspring/decimal"
+	"github.com/everstake/cosmoscan-api/log"
 )
 
 const topProposedBlocksValidatorsKey = "topProposedBlocksValidatorsKey"
@@ -53,4 +54,20 @@ func (s *ServiceFacade) GetValidatorBlocksStat(validatorAddress string) (stat sm
 	}
 	stat.Revenue = decimal.NewFromFloat(rewardPerBlock).Mul(decimal.NewFromInt(int64(stat.Proposed)))
 	return stat, nil
+}
+
+func (s *ServiceFacade) GetBlockTransactionCounts(blockHeight string) (transactioncounts int, err error) {
+
+	log.Info("service.GetBlockTransactionCounts() entered")
+
+	transactioncounts = 0
+
+	block, err := s.node.GetBlockHeight(blockHeight)
+	if err != nil {
+		return transactioncounts, fmt.Errorf("node.GetBlockTransactionCounts - GetBlockHeight: %s", err.Error())
+	}
+
+	transactioncounts = len(block.Block.Data.Txs)
+
+	return transactioncounts, nil
 }

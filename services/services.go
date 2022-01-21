@@ -74,6 +74,7 @@ type (
 		GetLatestTransactions(count string)(latest_transactions []dmodels.Transaction, err error)
 		GetValidatorUptimePercent(consensusAddr string)(uptimepercent float64, err error)
 		GetValidatorAggInfo(validatorAddr string)(result node.ValidatorAggInfoResult, err error)
+		GetBlockTransactionCounts(blockHeight string) (transactioncounts int, err error)
 		Test() (state dmodels.HistoricalState, err error)
 	}
 	CryptoMarket interface {

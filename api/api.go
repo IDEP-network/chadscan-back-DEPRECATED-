@@ -149,6 +149,7 @@ func (api *API) loadRoutes() {
 		{Path: "/validator/agginfo/{address}", Method: http.MethodGet, Func: api.GetValidatorAggInfo},
 		{Path: "/validator/uptimepercent/{address}", Method: http.MethodGet, Func: api.GetValidatorUptimePercent},
 		{Path: "/latest/transactions/{count}", Method: http.MethodGet, Func: api.GetLatestTransactions},
+		{Path: "/block/transactioncounts/{height}", Method: http.MethodGet, Func: api.GetBlockTransactionCounts},
 	})
 
 }
