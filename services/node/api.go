@@ -180,7 +180,7 @@ type (
 		Block struct {
 			Data struct {
 				Txs []string `json:"txs"`
-				TxsNum int
+				TxsNum int `json:"txsnum"`
 			} `json:"data"`
 			Evidence struct {
 				Evidence []string `json:"evidence"`
