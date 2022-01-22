@@ -180,6 +180,7 @@ type (
 		Block struct {
 			Data struct {
 				Txs []string `json:"txs"`
+				TxsNum int
 			} `json:"data"`
 			Evidence struct {
 				Evidence []string `json:"evidence"`

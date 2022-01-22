@@ -66,7 +66,7 @@ func (s *ServiceFacade) GetBlockHeight(blockHeight string) (result node.BlockHei
 		return node.BlockHeightResult{}, fmt.Errorf("node.GetBlockHeight: %s", err.Error())
 	}
 
-	//return nil, fmt.Errorf("GetBlockHeight() incomplete", err.Error())
+	result.Block.Data.TxsNum = len(result.Block.Data.Txs)
 
 	return result, nil
 }
