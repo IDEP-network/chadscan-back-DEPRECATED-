@@ -6,6 +6,7 @@ import (
 	"github.com/everstake/cosmoscan-api/smodels"
 	"github.com/everstake/cosmoscan-api/log"
 	"github.com/everstake/cosmoscan-api/dmodels"
+	"github.com/everstake/cosmoscan-api/services/node"
 )
 
 func (s *ServiceFacade) GetAggTransactionsFee(filter filters.Agg) (items []smodels.AggItem, err error) {
@@ -42,4 +43,17 @@ func (s *ServiceFacade) GetLatestTransactions (count string) (latest_transaction
 	}
 
 	return latest_transactions, nil
+}
+
+func (s *ServiceFacade) GetTransactionDetail (hash string) (result node.TransactionHashResult, err error) {
+
+        log.Info("services.GetTransactionDetail() entered")
+
+        result, err = s.node.GetTransactionDetail(hash)
+        if err != nil {
+                log.Error("GetTransactionDetail() -> s.node.GetTransactionDetail: %s", err.Error())
+                return
+        }
+
+        return result, nil
 }

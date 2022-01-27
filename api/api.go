@@ -150,6 +150,7 @@ func (api *API) loadRoutes() {
 		{Path: "/validator/uptimepercent/{address}", Method: http.MethodGet, Func: api.GetValidatorUptimePercent},
 		{Path: "/latest/transactions/{count}", Method: http.MethodGet, Func: api.GetLatestTransactions},
 		{Path: "/block/transactioncounts/{height}", Method: http.MethodGet, Func: api.GetBlockTransactionCounts},
+		{Path: "/transaction/detail/{hash}", Method: http.MethodGet, Func: api.GetTransactionDetail},
 	})
 
 }

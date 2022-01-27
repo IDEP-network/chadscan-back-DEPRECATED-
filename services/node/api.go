@@ -328,6 +328,96 @@ type (
 		UptimePercent float64 `json:"uptime_percent"`
 	}
 
+	TxnMessage struct {
+		AtType string `json:"@type"`
+		DelegatorAddress string `json:"delegator_address"`
+		ValidatorAddress string `json:"validator_address"`
+	}
+
+	TxnAttribute struct {
+		Key string `json:"key"`
+		Value string `json:"value"`
+	}
+
+	TxnEvents struct {
+		Type string `json:"type"`
+		Attributes []TxnAttribute `json:"attributes"`
+	}
+
+	TxnLogs struct {
+		MsgIndex int `json:"msg_index"`
+		Log string `json:"log"`
+		Events []TxnEvents `json:"events"`
+	}
+
+	TxnSignerInfo struct {
+		PublicKey struct {
+			AtType string `json:"@type"`
+			Key string `json:"key"`
+		}
+		ModeInfo struct {
+			Single struct {
+				Mode string `json:"mode"`
+			} `json:"single"`
+		} `json:"mode_info"`
+		Sequence string `json:"sequence"`
+	}
+
+	TransactionHashResult struct {
+  Tx struct {
+    Body struct {
+      Messages []TxnMessage `json:"messages"`
+      Memo string `json:"memo"`
+      TimeoutHeight string `json:"timeout_height"`
+      ExtensionOptions []string `json:"extension_options"`
+      NonCriticalExtensionOptions []string `json:"non_critical_extension_options"`
+    } `json:"body"`
+    AuthInfo struct {
+      SignerInfos []string `json:"signer_infos"`
+      Fee struct {
+        Amount []string `json:"amount"`
+        GasLimit string `json:"gas_limit"`
+        Payer string `json:"payer"`
+        Granter string `json:"granter"`
+      } `json:"fee"`
+    } `json:"auto_info"`
+    Signatures []string `json:"signatures"`
+  } `json:"tx"`
+  TxResponse struct {
+    Height string `json:"height"`
+    TxHash string `json:"txhash"`
+    CodeSpace string `json:"codespace"`
+    Code int64 `json:"code"`
+    Data string `json:"data"`
+    RawLog string `json:"raw_log"`
+    Logs []TxnLogs `json:"logs"`
+    Info string `json:"info"`
+    GasWanted string `json:"gas_wanted"`
+    GasUsed string `json:"gas_used"`
+    Tx struct {
+      AtType string `json:"@type"`
+      Body struct {
+        Messages []TxnMessage `json:"messages"`
+        Memo string `json:"memo"`
+        TimeoutHeight string `json:"timeout_height"`
+        ExtensionOptions []string `json:"extension_options"`
+        NonCriticalExtensionOptions []string `json:"non_critical_extension_options"`
+      } `json:"body"`
+      AutoInfo struct {
+        SignerInfos []TxnSignerInfo `json:"signer_infos"`
+        Fee struct {
+          Amount []string `json:"amount"`
+          GasLimit string `json:"gas_limit"`
+          Payer string `json:"payer"`
+          Granter string `json:"granter"`
+        } `json:"fee"`
+      } `json:"auth_info"`
+      Signatures []string `json:"signatures"`
+    } `json:"tx"`
+    Timestamp string `json:"timestamp"`
+  } `json:"tx_response"`
+}
+
 )
 
 func NewAPI(cfg config.Config) *API {
@@ -590,5 +680,15 @@ func (api API) GetValidatorProposerPriority(validatorAddr string) (result Valida
         }
 
 	return validatorProposerPriorityResult, nil
+
+}
+
+func (api API) GetTransactionDetail(hash string) (result TransactionHashResult, err error) {
+
+	err = api.request(fmt.Sprintf("/cosmos/tx/v1beta1/txs/%s", hash), &result)
+	if err != nil {
+		return result, fmt.Errorf("request: %s", err.Error())
+	}
+	return result, nil
 
 }

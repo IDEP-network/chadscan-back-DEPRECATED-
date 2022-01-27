@@ -75,6 +75,7 @@ type (
 		GetValidatorUptimePercent(consensusAddr string)(uptimepercent float64, err error)
 		GetValidatorAggInfo(validatorAddr string)(result node.ValidatorAggInfoResult, err error)
 		GetBlockTransactionCounts(blockHeight string) (transactioncounts int, err error)
+		GetTransactionDetail(hash string)(result node.TransactionHashResult, err error)
 		Test() (state dmodels.HistoricalState, err error)
 	}
 	CryptoMarket interface {
@@ -101,6 +102,7 @@ type (
 		GetValidatorPowerChangeUndelegate(validatorAddr string)(result node.ValidatorPowerChangeUndelegateResult, err error)
 		GetValidatorSlashing(validatorAddr string)(result node.ValidatorSlashingResult, err error)
 		GetValidatorProposerPriority(validatorAddr string)(result node.ValidatorProposerPriorityResult, err error)
+		GetTransactionDetail(hash string)(result node.TransactionHashResult, err error)
 	}
 
 	ServiceFacade struct {

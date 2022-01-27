@@ -38,3 +38,24 @@ func (api *API) GetLatestTransactions(w http.ResponseWriter, r *http.Request) {
         jsonData(w, resp)
 
 }
+
+func (api *API) GetTransactionDetail(w http.ResponseWriter, r *http.Request) {
+
+        log.Info("api.GetTransactionDetail() entered")
+
+        hash, ok := mux.Vars(r)["hash"]
+        if !ok || hash == "" {
+                jsonBadRequest(w, "invalid hash")
+                return
+        }
+
+        resp, err := api.svc.GetTransactionDetail(hash)
+        if err != nil {
+                log.Error("API GetTransactionDetail: svc.GetTransactionDetail: %s", err.Error())
+                jsonError(w)
+                return
+        }
+
+        jsonData(w, resp)
+
+}
