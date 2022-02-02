@@ -19,6 +19,15 @@ func (s *ServiceFacade) GetAggBlocksCount(filter filters.Agg) (items []smodels.A
 	return items, nil
 }
 
+func (s *ServiceFacade) GetBlocks(filter filters.Blocks) (block []dmodels.Block, err error) {
+	blocks, err := s.dao.GetBlocks(filter)
+	if err != nil {
+		return blocks, fmt.Errorf("dao.GetBlocks: %s", err.Error())
+	}
+	return blocks, nil
+}
+
+
 func (s *ServiceFacade) GetAggBlocksDelay(filter filters.Agg) (items []smodels.AggItem, err error) {
 	items, err = s.dao.GetAggBlocksDelay(filter)
 	if err != nil {

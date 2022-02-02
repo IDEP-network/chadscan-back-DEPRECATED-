@@ -22,6 +22,7 @@ type (
 		GetAggTransfersVolume(filter filters.Agg) (items []smodels.AggItem, err error)
 		GetHistoricalState() (state smodels.HistoricalState, err error)
 		GetAggBlocksCount(filter filters.Agg) (items []smodels.AggItem, err error)
+		GetBlocks(filter filters.Blocks) (block []dmodels.Block, err error)
 		GetAggBlocksDelay(filter filters.Agg) (items []smodels.AggItem, err error)
 		GetAggUniqBlockValidators(filter filters.Agg) (items []smodels.AggItem, err error)
 		GetAggDelegationsVolume(filter filters.DelegationsAgg) (items []smodels.AggItem, err error)
