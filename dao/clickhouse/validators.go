@@ -115,8 +115,11 @@ func (db DB) GetValidatorUptimePercent(consensusAddr string) (uptimepercent floa
         log.Info("dao.clickhouse.GetValidatorUptimePercent() entered")
 
 	var latestBlock []dmodels.Block	//latest block
-	var prevBlock []dmodels.Block	//the block that is 500 blocks prior to the latest block
+	var prevBlock []dmodels.Block	//the block that is NUM_BLOCKS_TO_CHECK  blocks prior to the latest block
 	var numMissedBlocks uint64
+	var NUM_BLOCKS_TO_CHECK uint64
+
+	NUM_BLOCKS_TO_CHECK = 10000
 
 	q := squirrel.Select("*").From(dmodels.BlocksTable).OrderBy("blk_id desc").Limit(1)
 	err = db.Find(&latestBlock, q)
@@ -126,7 +129,7 @@ func (db DB) GetValidatorUptimePercent(consensusAddr string) (uptimepercent floa
 	}
 
 	var prevBlockId uint64
-	if latestBlock[0].ID < 500 {
+	if latestBlock[0].ID < NUM_BLOCKS_TO_CHECK {
 		prevBlockId = 1
 	} else {
 		prevBlockId = latestBlock[0].ID
@@ -151,7 +154,7 @@ func (db DB) GetValidatorUptimePercent(consensusAddr string) (uptimepercent floa
                 return 0, fmt.Errorf("dao.clickhouse.GetValidatorUptimePercent - 2: %s", err.Error())
 	}
 
-	uptimepercent = 100*float64(500 - numMissedBlocks)/float64(500)
+	uptimepercent = 100*float64(NUM_BLOCKS_TO_CHECK - numMissedBlocks)/float64(NUM_BLOCKS_TO_CHECK)
 
 	return uptimepercent, nil
 
