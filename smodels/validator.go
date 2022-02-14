@@ -16,4 +16,5 @@ type Validator struct {
 	Delegators      uint64          `json:"delegators"`
 	Power24Change   decimal.Decimal `json:"power_24_change"`
 	GovernanceVotes uint64          `json:"governance_votes"`
+	UptimePercent   float64         `json:"uptime_percent"`
 }

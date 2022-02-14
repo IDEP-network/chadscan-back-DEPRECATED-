@@ -161,6 +161,12 @@ func (s *ServiceFacade) makeValidators() (validators []smodels.Validator, err er
 			percentPower = power.Div(stakingPool.Pool.BondedTokens).Mul(decimal.NewFromInt(100)).Truncate(2)
 		}
 
+
+	uptimePercent, err := s.GetValidatorUptimePercent(consAddress)
+	if err != nil {
+		return nil, fmt.Errorf("GetValidatorAggInfo() -> s.GetValidatorUptimePercent: %s", err.Error())
+	}
+
 		validators = append(validators, smodels.Validator{
 			Title:           v.Description.Moniker,
 			Power:           power,
@@ -175,6 +181,7 @@ func (s *ServiceFacade) makeValidators() (validators []smodels.Validator, err er
 			OperatorAddress: v.OperatorAddress,
 			AccAddress:      address.String(),
 			ConsAddress:     consAddress,
+			UptimePercent:	uptimePercent,
 		})
 	}
 
