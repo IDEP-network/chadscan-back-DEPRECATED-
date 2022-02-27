@@ -3,6 +3,12 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"net/http"
+	"reflect"
+	"strconv"
+	"time"
+
 	"github.com/everstake/cosmoscan-api/config"
 	"github.com/everstake/cosmoscan-api/dao"
 	"github.com/everstake/cosmoscan-api/dmodels"
@@ -13,11 +19,6 @@ import (
 	"github.com/rs/cors"
 	"github.com/urfave/negroni"
 	"go.uber.org/zap"
-	"io/ioutil"
-	"net/http"
-	"reflect"
-	"strconv"
-	"time"
 )
 
 type API struct {
@@ -95,7 +96,6 @@ func (api *API) loadRoutes() {
 		{Path: "/", Method: http.MethodGet, Func: api.Index},
 		{Path: "/health", Method: http.MethodGet, Func: api.Health},
 		{Path: "/api", Method: http.MethodGet, Func: api.GetSwaggerAPI},
-
 		{Path: "/meta", Method: http.MethodGet, Func: api.GetMetaData},
 		{Path: "/historical-state", Method: http.MethodGet, Func: api.GetHistoricalState},
 		{Path: "/transactions/fee/agg", Method: http.MethodGet, Func: api.GetAggTransactionsFee},
@@ -104,6 +104,7 @@ func (api *API) loadRoutes() {
 		{Path: "/block/hash/{hash}", Method: http.MethodGet, Func: api.GetBlockHash},
 		{Path: "/block/height/{height}", Method: http.MethodGet, Func: api.GetBlockHeight},
 		{Path: "/blocks/count/agg", Method: http.MethodGet, Func: api.GetAggBlocksCount},
+		{Path: "/blocks/{limit:[0-9]+}/{offset:[0-9]+}", Method: http.MethodGet, Func: api.GetBlocks},
 		{Path: "/blocks/delay/agg", Method: http.MethodGet, Func: api.GetAggBlocksDelay},
 		{Path: "/blocks/validators/uniq/agg", Method: http.MethodGet, Func: api.GetAggUniqBlockValidators},
 		{Path: "/blocks/operations/agg", Method: http.MethodGet, Func: api.GetAvgOperationsPerBlock},
