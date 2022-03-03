@@ -20,8 +20,11 @@ func (api *API) GetBlocks(w http.ResponseWriter, r *http.Request) {
 		jsonBadRequest(w, "")
 		return
 	}
-	if filter.Limit == 0 || filter.Limit > 100 {
+	if filter.Limit == 0 {
 		filter.Limit = 100
+	}
+	if filter.Limit  > 1000 {
+		filter.Limit = 1000
 	}
 	resp, err := api.svc.GetBlocks(filter)
 	if err != nil {
