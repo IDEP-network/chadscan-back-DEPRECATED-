@@ -104,7 +104,7 @@ func (api *API) loadRoutes() {
 		{Path: "/block/hash/{hash}", Method: http.MethodGet, Func: api.GetBlockHash},
 		{Path: "/block/height/{height}", Method: http.MethodGet, Func: api.GetBlockHeight},
 		{Path: "/blocks/count/agg", Method: http.MethodGet, Func: api.GetAggBlocksCount},
-		{Path: "/blocks/{limit:[0-9]+}/{offset:[0-9]+}", Method: http.MethodGet, Func: api.GetBlocks},
+		{Path: "/blocks", Method: http.MethodGet, Func: api.GetBlocks},
 		{Path: "/blocks/delay/agg", Method: http.MethodGet, Func: api.GetAggBlocksDelay},
 		{Path: "/blocks/validators/uniq/agg", Method: http.MethodGet, Func: api.GetAggUniqBlockValidators},
 		{Path: "/blocks/operations/agg", Method: http.MethodGet, Func: api.GetAvgOperationsPerBlock},

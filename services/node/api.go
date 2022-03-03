@@ -176,6 +176,45 @@ type (
 		Timestamp  string `json:"timestamp"`
 		ValidatorAddress  string `json:"validator_address"`
 	}
+	Block struct {
+		BlockID struct {
+			Hash          string `json:"hash"`
+			PartSetHeader struct {
+				Total int    `json:"total"`
+				Hash  string `json:"hash"`
+			} `json:"part_set_header"`
+		} `json:"block_id"`
+		Block struct {
+			Header struct {
+				Version struct {
+					Block string `json:"block"`
+					App   string `json:"app"`
+				} `json:"version"`
+				ChainID     string    `json:"chain_id"`
+				Height      uint64    `json:"height,string"`
+				Time        time.Time `json:"time"`
+				LastBlockID struct {
+					Hash          string `json:"hash"`
+					PartSetHeader struct {
+						Total int    `json:"total"`
+						Hash  string `json:"hash"`
+					} `json:"part_set_header"`
+				} `json:"last_block_id"`
+				LastCommitHash     string `json:"last_commit_hash"`
+				DataHash           string `json:"data_hash"`
+				ValidatorsHash     string `json:"validators_hash"`
+				NextValidatorsHash string `json:"next_validators_hash"`
+				ConsensusHash      string `json:"consensus_hash"`
+				AppHash            string `json:"app_hash"`
+				LastResultsHash    string `json:"last_results_hash"`
+				EvidenceHash       string `json:"evidence_hash"`
+				ProposerAddress    string `json:"proposer_address"`
+			} `json:"header"`
+			Data struct {
+				Txs []string `json:"txs"`
+			} `json:"data"`
+		} `json:"block"`
+	}
 	BlockHeightResult struct {
 		Block struct {
 			Data struct {
@@ -578,6 +617,15 @@ func (api API) GetBlockHeight(blockHeight string) (result BlockHeightResult, err
         }
         return result, nil
 }
+
+func (api API) GetBlock(id uint64) (result Block, err error) {
+	err = api.request(fmt.Sprintf("/cosmos/base/tendermint/v1beta1/blocks/%d", id), &result)
+	if err != nil {
+		return result, fmt.Errorf("request: %s", err.Error())
+	}
+	return result, nil
+}
+
 
 func (api API) GetWalletAddress(walletAddr string) (result WalletAddressResult, err error) {
 

@@ -2,11 +2,12 @@ package clickhouse
 
 import (
 	"fmt"
+
 	"github.com/Masterminds/squirrel"
 	"github.com/everstake/cosmoscan-api/dao/filters"
 	"github.com/everstake/cosmoscan-api/dmodels"
-	"github.com/everstake/cosmoscan-api/smodels"
 	"github.com/everstake/cosmoscan-api/log"
+	"github.com/everstake/cosmoscan-api/smodels"
 )
 
 func (db DB) CreateBlocks(blocks []dmodels.Block) error {
@@ -44,6 +45,12 @@ func (db DB) GetBlocks(filter filters.Blocks) (blocks []dmodels.Block, err error
 	}
 	err = db.Find(&blocks, q)
 	return blocks, err
+}
+
+func (db DB) GetBlocksCount(filter filters.Blocks) (total uint64, err error) {
+	q := squirrel.Select("count(*)").From(dmodels.BlocksTable)
+	err = db.FindFirst(&total, q)
+	return total, err
 }
 
 func (db DB) GetAggBlocksCount(filter filters.Agg) (items []smodels.AggItem, err error) {

@@ -8,3 +8,4 @@ backups
 .env
 .cache
 docker-compose.yml
+/.history/

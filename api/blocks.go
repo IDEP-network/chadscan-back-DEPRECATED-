@@ -3,6 +3,7 @@ package api
 import (
 	"net/http"
 
+	"github.com/everstake/cosmoscan-api/dao/filters"
 	"github.com/everstake/cosmoscan-api/log"
 	"github.com/gorilla/mux"
 )
@@ -12,7 +13,23 @@ func (api *API) GetAggBlocksCount(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *API) GetBlocks(w http.ResponseWriter, r *http.Request) {
-	api.blockHandler(w, r, api.svc.GetBlocks)
+	var filter filters.Blocks
+	err := api.queryDecoder.Decode(&filter, r.URL.Query())
+	if err != nil {
+		log.Debug("API Decode: %s", err.Error())
+		jsonBadRequest(w, "")
+		return
+	}
+	if filter.Limit == 0 || filter.Limit > 100 {
+		filter.Limit = 100
+	}
+	resp, err := api.svc.GetBlocks(filter)
+	if err != nil {
+		log.Error("API GetBlocks: svc.GetBlocks: %s", err.Error())
+		jsonError(w)
+		return
+	}
+	jsonData(w, resp)
 }
 
 func (api *API) GetAggBlocksDelay(w http.ResponseWriter, r *http.Request) {
