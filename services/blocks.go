@@ -2,10 +2,12 @@ package services
 
 import (
 	"fmt"
+
 	"github.com/everstake/cosmoscan-api/dao/filters"
+	"github.com/everstake/cosmoscan-api/dmodels"
+	"github.com/everstake/cosmoscan-api/log"
 	"github.com/everstake/cosmoscan-api/smodels"
 	"github.com/shopspring/decimal"
-	"github.com/everstake/cosmoscan-api/log"
 )
 
 const topProposedBlocksValidatorsKey = "topProposedBlocksValidatorsKey"
@@ -19,14 +21,38 @@ func (s *ServiceFacade) GetAggBlocksCount(filter filters.Agg) (items []smodels.A
 	return items, nil
 }
 
-func (s *ServiceFacade) GetBlocks(filter filters.Blocks) (block []dmodels.Block, err error) {
-	blocks, err := s.dao.GetBlocks(filter)
+func (s *ServiceFacade) GetBlocks(filter filters.Blocks) (resp smodels.PaginatableResponse, err error) {
+	dBlocks, err := s.dao.GetBlocks(filter)
 	if err != nil {
-		return blocks, fmt.Errorf("dao.GetBlocks: %s", err.Error())
+		return resp, fmt.Errorf("dao.GetBlocks: %s", err.Error())
 	}
-	return blocks, nil
+	total, err := s.dao.GetBlocksCount(filter)
+	if err != nil {
+		return resp, fmt.Errorf("dao.GetBlocksCount: %s", err.Error())
+	}
+	validators, err := s.makeValidatorMap()
+	if err != nil {
+		return resp, fmt.Errorf("s.makeValidatorMap: %s", err.Error())
+	}
+	var blocks []dmodels.Block
+	for _, b := range dBlocks {
+		var proposer string
+		validator, ok := validators[b.Proposer]
+		if ok {
+			proposer = validator.Description.Moniker
+		}
+		blocks = append(blocks, dmodels.Block{
+			ID:          				b.ID,
+			Hash:            b.Hash,
+			Proposer:        proposer,
+			CreatedAt:       b.CreatedAt,
+		})
+	}
+	return smodels.PaginatableResponse{
+		Items: blocks,
+		Total: total,
+	}, nil
 }
-
 
 func (s *ServiceFacade) GetAggBlocksDelay(filter filters.Agg) (items []smodels.AggItem, err error) {
 	items, err = s.dao.GetAggBlocksDelay(filter)
